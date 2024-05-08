@@ -1,4 +1,4 @@
-package com.example;
+package com.sagescalable;
 
 import lombok.Builder;
 import lombok.Data;

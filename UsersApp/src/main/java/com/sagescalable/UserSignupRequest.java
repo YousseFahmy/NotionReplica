@@ -1,7 +1,6 @@
-package com.example;
+package com.sagescalable;
 
-public record UserSignupRequest(String id,
-                                String username,
+public record UserSignupRequest(String username,
                                 String password,
                                 String email,
                                 String firstName,

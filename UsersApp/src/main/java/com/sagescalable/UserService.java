@@ -1,8 +1,7 @@
-package com.example;
+package com.sagescalable;
 
 import org.springframework.stereotype.Service;
 
-import java.beans.Customizer;
 @Service
 public class UserService {
     public void signUpUser(UserSignupRequest request){
