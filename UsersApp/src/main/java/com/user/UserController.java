@@ -14,6 +14,6 @@ public record UserController(UserSignUp UserSignUp, UserLogin userLogin) {
     @PostMapping
     public void signUp(@RequestBody UserData UserSignupRequest){
         log.info("New user Signup");
-        UserSignUp.execute(UserSignupRequest);
+        userLogin.execute(UserSignupRequest);
     }
 }
