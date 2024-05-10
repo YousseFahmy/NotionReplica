@@ -1,12 +1,13 @@
-package com.notes.entities;
-
+package com.notionreplica.notion.notes.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "Page")
 public class Page {
 
@@ -27,9 +31,10 @@ public class Page {
     private long workspaceId;
 
     @Id
-    @Setter(AccessLevel.PROTECTED)
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID pageId;
+    //@Setter(AccessLevel.PROTECTED)
+    //@GeneratedValue(strategy = GenerationType.UUID)
+    private Integer pageId;
+
     private long iconId = -1;
     //private long backgroundId = -1;
 

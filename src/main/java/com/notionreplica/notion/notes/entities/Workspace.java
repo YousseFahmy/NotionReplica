@@ -1,4 +1,4 @@
-package com.notes.entities;
+package com.notionreplica.notion.notes.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

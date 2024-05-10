@@ -1,20 +1,27 @@
-package com.notes;
+package com.notionreplica.notion.notes;
 
-import com.notes.entities.Page;
-import com.notes.repositories.PageRepo;
+import com.notionreplica.notion.notes.entities.Page;
+import com.notionreplica.notion.notes.entities.Workspace;
+import com.notionreplica.notion.notes.repositories.PageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class NotesController {
     @Autowired
-    PageRepo page;
+    private NotesService notesService;
     @PostMapping("/addPage")
-    public Page addPage(){
-        page.save(new Page(33,34));
-        return page.save(new Page(33,34));
-
+    public String addPage(){
+        notesService.addPage();
+        return "saved";
+    }
+    @GetMapping("/addPage")
+    public List<Page> tezi2r3a(){
+        return notesService.tezi2r3a();
     }
 }

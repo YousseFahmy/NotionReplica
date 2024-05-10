@@ -1,4 +1,4 @@
-package com.notes.entities;
+package com.notionreplica.notion.notes.entities;
 
 public enum AccessModifier {
     PRIVATE,
