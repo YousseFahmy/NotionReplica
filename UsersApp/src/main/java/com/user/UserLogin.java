@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public record UserLogin(UserRepository userRepository) implements UserServiceWithData{
     @Override
     public void execute(UserData userData) {
-        User user = userRepository.findByUsername(userData.username());
+        User user = userRepository.findByUsername(userData.username()).orElseThrow();
         if(user.getPassword().equals(userData.password())){
             log.info("New user Login");
         }

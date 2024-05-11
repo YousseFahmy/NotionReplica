@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String secretKey = "4C9F49ED43BA24E757AB89DFEE18C";
+    private final String secretKey = "2d164e4203ae98f328aab0867447ce701d19aa92c51c9b0220ab31e7328ce568";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -37,10 +37,9 @@ public class JwtService {
                                 UserDetails userDetails){
         return  Jwts
                 .builder()
-                .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*24))
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*60*24))
                 .signWith(getSignInKey())
                 .compact();
     }
@@ -65,7 +64,7 @@ public class JwtService {
 
     //different implementation
     private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64URL.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

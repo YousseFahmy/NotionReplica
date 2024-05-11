@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 public record UserController(UserSignUp UserSignUp, UserLogin userLogin) {
 
     @PostMapping
     public void signUp(@RequestBody UserData UserSignupRequest){
         log.info("New user Signup");
-        userLogin.execute(UserSignupRequest);
+        UserSignUp.execute(UserSignupRequest);
     }
 }
