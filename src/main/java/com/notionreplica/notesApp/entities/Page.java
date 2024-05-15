@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.mapping.*;
 import java.util.*;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Document(collection = "Pages")
 public class Page {
 
@@ -17,9 +15,8 @@ public class Page {
     @MongoId(FieldType.OBJECT_ID)
     private String pageId;
 
-    @DBRef
     @Field
-    private Workspace workspace;
+    private String workspaceId;
 
     @Field
     private long iconId = -1;
@@ -47,8 +44,8 @@ public class Page {
     @Field("updated_at")
     private Date updatedAt;
 
-    public Page(Workspace workspace,String pageTitle) {
-        this.workspace= workspace;
-        this.pageTitle= pageTitle==null?"untitled":pageTitle;
+    public Page(String workspaceId) {
+        this.workspaceId= workspaceId;
     }
+
 }

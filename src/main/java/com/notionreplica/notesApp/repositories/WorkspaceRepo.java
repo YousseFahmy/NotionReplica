@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkspaceRepo extends MongoRepository <Workspace, String> {
-    Workspace findByUserId(long userId);
+    Workspace findWorkspaceByUserId(long userId);
 }
