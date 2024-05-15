@@ -1,6 +1,6 @@
 package com.auth;
 
-public interface AuthenticationService {
-    public AuthenticationResponse execute();
+public interface AuthenticationService<T> {
+    public T execute();
 
 }

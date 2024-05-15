@@ -33,7 +33,7 @@ public class SecurityConfig {
         log.info("New user Login");
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/register", "/login").permitAll()
+                .requestMatchers("user/register", "user/login").permitAll()
                 .anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

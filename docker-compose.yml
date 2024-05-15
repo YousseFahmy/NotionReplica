@@ -28,6 +28,15 @@ services:
       - postgres
     restart: unless-stopped
 
+#  redis:
+#    image: redis/redis-stack-server:7.2.0-v6
+#    ports:
+#      - 6379:6379
+#    healthcheck:
+#      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+#    volumes:
+#      - redis_data:/data
+
 networks:
   postgres:
     driver: bridge
@@ -35,3 +44,4 @@ networks:
 volumes:
   postgres:
   pgadmin:
+#  redis_data:

@@ -7,14 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Connection;
+import redis.clients.jedis.Jedis;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("user")
 public class AuthenticationController {
 
     private final UserRepository repository;
@@ -22,15 +23,32 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @PostMapping("register")
+    Jedis jedis = new Jedis("redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053");
+    Connection connection = jedis.getConnection();
+
+
+    @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
         AuthenticationSignUp authenticationSignUp = new AuthenticationSignUp(repository, passwordEncoder, jwtService, request);
-        return ResponseEntity.ok(authenticationSignUp.execute());
+        AuthenticationResponse signUpResponse = authenticationSignUp.execute();
+        jedis.set(request.getUsername(), signUpResponse.getToken());
+        jedis.expire(request.getUsername(), 60*60*24);
+        return ResponseEntity.ok(signUpResponse);
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
         AuthenticationLogin authenticationLogin = new AuthenticationLogin(authenticationManager, repository, jwtService, request);
-        return ResponseEntity.ok(authenticationLogin.execute());
+        AuthenticationResponse loginResponse = authenticationLogin.execute();
+        jedis.set(request.getUsername(), loginResponse.getToken());
+        jedis.expire(request.getUsername(), 60*60*24);
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("/delete")
+    @Transactional
+    public void deleteUser (@RequestBody AuthenticationRequest request){
+        AuthenticationDeleteUser authenticationDeleteUser= new AuthenticationDeleteUser(request, repository);
+        log.info(authenticationDeleteUser.execute());
     }
 }

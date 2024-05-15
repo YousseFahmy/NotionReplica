@@ -7,7 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public record AuthenticationLogin(AuthenticationManager authenticationManager, UserRepository repository,
-                                  JwtService jwtService, AuthenticationRequest request) implements AuthenticationService {
+                                  JwtService jwtService, AuthenticationRequest request) implements AuthenticationService<AuthenticationResponse> {
     public AuthenticationResponse execute() {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         User user = repository.findByUsername(request.getUsername())

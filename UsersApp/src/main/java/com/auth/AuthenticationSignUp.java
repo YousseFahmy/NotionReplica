@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public record AuthenticationSignUp(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, RegisterRequest request) implements AuthenticationService {
+public record AuthenticationSignUp(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, RegisterRequest request) implements AuthenticationService<AuthenticationResponse> {
 
     public AuthenticationResponse execute() {
         User user = User.builder()
