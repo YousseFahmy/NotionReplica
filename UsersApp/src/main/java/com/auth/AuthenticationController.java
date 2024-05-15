@@ -4,6 +4,8 @@ import com.config.JwtService;
 import com.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,9 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Connection;
 import redis.clients.jedis.Jedis;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@ConfigurationProperties
 @RequestMapping("user")
 public class AuthenticationController {
 
@@ -22,6 +28,9 @@ public class AuthenticationController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+//    @Value("${spring.redis.url}")
+//    private String connectionURL;
 
     Jedis jedis = new Jedis("redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053");
     Connection connection = jedis.getConnection();
@@ -45,10 +54,27 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/delete/{userID}")
     @Transactional
-    public void deleteUser (@RequestBody AuthenticationRequest request){
-        AuthenticationDeleteUser authenticationDeleteUser= new AuthenticationDeleteUser(request, repository);
-        log.info(authenticationDeleteUser.execute());
+    public ResponseEntity<Map<String, Object>> deleteUser (@PathVariable("userID") String UID){
+        AuthenticationDeleteUser authenticationDeleteUser= new AuthenticationDeleteUser(UID, repository);
+        Map<String, Object> response = new HashMap<>();
+        String result = authenticationDeleteUser.execute();
+        response.put("message",result);
+        log.info(result);
+        return ResponseEntity.ok(response);
+
     }
+
+    @PostMapping("/changepassword/{userID}")
+    public ResponseEntity<Map<String, Object>> changePassword(@PathVariable("userID") String UID, @RequestBody ChangePasswordBody changePasswordBody){
+        AuthenticationChangePassword authenticationChangePassword = new AuthenticationChangePassword(UID, repository, passwordEncoder, changePasswordBody.getNewPassword(), changePasswordBody.getOldPassword());
+        Map<String, Object> response = new HashMap<>();
+        String result = authenticationChangePassword.execute();
+        response.put("message", result);
+        log.info(result);
+        return ResponseEntity.ok(response);
+    }
+
+
 }

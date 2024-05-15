@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -20,15 +21,10 @@ import java.util.List;
 @Table(name = "user_table")
 public class User implements UserDetails {
     @Id
-    @SequenceGenerator(
-            name = "user_id_sequence",
-            sequenceName = "user_id_sequence"
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_id_sequence"
+            strategy = GenerationType.UUID
     )
-    private Integer id;
+    private UUID id;
     private String username;
     private String password;
     private String email;
