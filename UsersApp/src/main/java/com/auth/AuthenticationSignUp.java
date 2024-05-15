@@ -4,7 +4,6 @@ import com.config.JwtService;
 import com.user.Role;
 import com.user.User;
 import com.user.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
