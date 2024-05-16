@@ -9,9 +9,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 public record AuthenticationLogin(AuthenticationManager authenticationManager, UserRepository repository,
                                   JwtService jwtService, AuthenticationRequest request) implements AuthenticationService<AuthenticationResponse> {
     public AuthenticationResponse execute() {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         User user = repository.findByUsername(request.getUsername())
                 .orElseThrow();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }

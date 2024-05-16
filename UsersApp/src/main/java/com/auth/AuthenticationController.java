@@ -1,6 +1,7 @@
 package com.auth;
 
 import com.config.JwtService;
+import com.user.User;
 import com.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +41,14 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
         AuthenticationSignUp authenticationSignUp = new AuthenticationSignUp(repository, passwordEncoder, jwtService, request);
         AuthenticationResponse signUpResponse = authenticationSignUp.execute();
-        jedis.set(request.getUsername(), signUpResponse.getToken());
-        jedis.expire(request.getUsername(), 60*60*24);
-        return ResponseEntity.ok(signUpResponse);
+        if(!signUpResponse.getToken().equals("Email already exists")) {
+            jedis.set(request.getUsername(), signUpResponse.getToken());
+            jedis.expire(request.getUsername(), 60 * 60 * 24);
+            return ResponseEntity.ok(signUpResponse);
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/login")
@@ -54,6 +60,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    @GetMapping("/getuser/{username}")
+    public ResponseEntity<Map<String, Object>> getUser (@PathVariable("username") String username){
+        AuthenticationGetUser authenticationGetUser = new AuthenticationGetUser(repository, username);
+        User user = authenticationGetUser.execute();
+        Map<String, Object> response = new HashMap<>();
+        response.put("message",user);
+        log.info(user.toString());
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/delete/{userID}")
     @Transactional
     public ResponseEntity<Map<String, Object>> deleteUser (@PathVariable("userID") String UID){
@@ -63,7 +79,6 @@ public class AuthenticationController {
         response.put("message",result);
         log.info(result);
         return ResponseEntity.ok(response);
-
     }
 
     @PostMapping("/changepassword/{userID}")
@@ -76,5 +91,34 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/changeemail/{userID}")
+    public ResponseEntity<Map<String, Object>> changeEmail(@PathVariable("userID") String UID, @RequestBody String newEmail){
+        AuthenticationChangeEmail authenticationChangeEmail = new AuthenticationChangeEmail(UID, repository, newEmail);
+        Map<String, Object> response = new HashMap<>();
+        String result = authenticationChangeEmail.execute();
+        response.put("message", result);
+        log.info(result);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/changeusername/{userID}")
+    public ResponseEntity<Map<String, Object>> changeUsername(@PathVariable("userID") String UID, @RequestBody String newUsername){
+        AuthenticationChangeUsername authenticationChangeUsername = new AuthenticationChangeUsername(UID, repository, newUsername);
+        Map<String, Object> response = new HashMap<>();
+        String result = authenticationChangeUsername.execute();
+        response.put("message", result);
+        log.info(result);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/changename/{userID}")
+    public ResponseEntity<Map<String, Object>> changeName(@PathVariable("userID") String UID, @RequestBody ChangeNameBody newName){
+        AuthenticationChangeName authenticationChangeName = new AuthenticationChangeName(UID, repository, newName.firstName, newName.lastName);
+        Map<String, Object> response = new HashMap<>();
+        String result = authenticationChangeName.execute();
+        response.put("message", result);
+        log.info(result);
+        return ResponseEntity.ok(response);
+    }
 
 }

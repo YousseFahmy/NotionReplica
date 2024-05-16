@@ -6,6 +6,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Connection;
+import redis.clients.jedis.Jedis;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -16,6 +18,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     private final String secretKey = "2d164e4203ae98f328aab0867447ce701d19aa92c51c9b0220ab31e7328ce568";
+
+    Jedis jedis = new Jedis("redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053");
+    Connection connection = jedis.getConnection();
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -44,7 +49,7 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails
                                  userDetails){
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && (jedis.get(username).equals(token)));
     }
 
     private boolean isTokenExpired(String token) {

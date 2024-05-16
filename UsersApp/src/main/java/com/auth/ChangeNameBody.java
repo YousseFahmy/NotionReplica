@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordBody {
-    private String oldPassword;
-    private String newPassword;
+public class ChangeNameBody {
+    String firstName;
+    String lastName;
 }
