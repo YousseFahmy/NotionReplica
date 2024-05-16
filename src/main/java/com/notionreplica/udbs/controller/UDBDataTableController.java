@@ -33,19 +33,24 @@ public class UDBDataTableController {
 
     @PutMapping("/updateUdbTable/{UDBid}")
     public ResponseEntity<Map<String,Object>> updateUDBDataTable(@PathVariable("UDBid") String id, @RequestBody Map<String,String> reqBody) throws Exception {
-
-        UDBDataTable udbDataTable = udbDataTableService.getUDBDataTable(id);
-        if (reqBody.containsKey("title") && reqBody.get("title") != null) {
-            udbDataTable = udbDataTableService.updateUDBDataTable(id, reqBody.get("title"));
-        }
-        if (reqBody.containsKey("propertyID") && reqBody.get("propertyID") != null) {
-            udbDataTable= udbDataTableService.addPropertyToUDBDataTable(id, reqBody.get("propertyID"));
-        }
-        //if(reqBody.containsKey("udbpagesID") && reqBody.get("udbpagesID") != null){}
-
         Map<String, Object> response = new HashMap<>();
-        response.put("UDB Data Table", udbDataTable);
-        return ResponseEntity.ok(response);
+        try{
+            UDBDataTable udbDataTable = udbDataTableService.getUDBDataTable(id);
+            if (reqBody.containsKey("title") && reqBody.get("title") != null) {
+                udbDataTable = udbDataTableService.updateUDBDataTable(id, reqBody.get("title"));
+            }
+            if (reqBody.containsKey("propertyID") && reqBody.get("propertyID") != null) {
+                udbDataTable= udbDataTableService.addPropertyToUDBDataTable(id, reqBody.get("propertyID"));
+            }
+            //if(reqBody.containsKey("udbpagesID") && reqBody.get("udbpagesID") != null){}
+
+            response.put("UDB Data Table", udbDataTable);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            //Edit this
+            return ResponseEntity.ok(response);
+        }
+
     }
 
     //@PutMapping("/updateUdbTable/{UDBid}/property/{propertyID}")
