@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+import static com.notionreplica.notesApp.services.command.CommandInterface.DELETE_WORKSPACE;
+
 @Service
 public class NotesService{
     @Autowired
@@ -28,6 +30,23 @@ public class NotesService{
             return (List<Object>) CommandFactory.create(CommandInterface.GET_PAGES,workspaceId).execute();
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+    }
+
+    public Page getPage(String pageId,String workspaceId) throws Exception{
+
+            return (Page) CommandFactory.create(CommandInterface.GET_PAGE,pageId,workspaceId).execute();
+
+
+    }
+
+    public String deletePagesByWorkSpaceId(String workspaceId){
+        try{
+            return (String) CommandFactory.create(CommandInterface.DELETE_PAGES,workspaceId).execute();
+        }catch(Exception e){
             System.out.println(e.getMessage());
             return null;
         }

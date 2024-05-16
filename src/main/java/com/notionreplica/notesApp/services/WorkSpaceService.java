@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.notionreplica.notesApp.services.command.CommandInterface.CREATE_WORKSPACE;
-import static com.notionreplica.notesApp.services.command.CommandInterface.GET_WORKSPACE;
+import static com.notionreplica.notesApp.services.command.CommandInterface.*;
 
 @Service
 public class WorkSpaceService {
@@ -32,6 +31,16 @@ public class WorkSpaceService {
             System.out.println(e.getMessage());
             return null;
         }
+    }
+
+    public String deleteWorkSpace(long userId) {
+        try{
+            return (String) CommandFactory.create(DELETE_WORKSPACE,userId).execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 
 

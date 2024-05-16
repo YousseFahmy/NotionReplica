@@ -32,5 +32,13 @@ public class WorkspaceController extends Throwable{
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/deleteWorkSpace")
+    public ResponseEntity<Map<String, Object>> deleteWorkSpace(@PathVariable("userId") long userId){
+        Map<String, Object> response = new HashMap<>();
+        String userWorkSpace =workSpaceService.deleteWorkSpace(userId);
+        response.put("workspace",userWorkSpace);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.notionreplica.notesApp.controller;
 
 import com.notionreplica.notesApp.entities.AccessModifier;
 import com.notionreplica.notesApp.entities.Page;
+import com.notionreplica.notesApp.exceptions.InvalidObjectIdException;
 import com.notionreplica.notesApp.services.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,35 @@ public class NotesController {
     public ResponseEntity<Map<String, Object>> getPages(@PathVariable("userId") String userId,
                                                         @PathVariable("workspaceId") String workspaceId) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println(notesService.getPages(workspaceId));
         response.put("Pages",notesService.getPages(workspaceId));
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{pageId}")
+    public ResponseEntity<Map<String, Object>> getPage(@PathVariable("userId") String userId,
+                                                        @PathVariable("workspaceId") String workspaceId,
+                                                       @PathVariable("pageId")String pageId){
+        Map<String, Object> response = new HashMap<>();
+        try{
+            response.put("Page",notesService.getPage(pageId,workspaceId));
+        }
+        catch(Exception e){
+            response.put("error message",e.getMessage());
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/deletePages")
+    public ResponseEntity<Map<String, Object>> deletePages(@PathVariable("userId") String userId,
+                                                       @PathVariable("workspaceId") String workspaceId){
+        Map<String, Object> response = new HashMap<>();
+        try{
+            response.put("Page",notesService.deletePagesByWorkSpaceId(workspaceId));
+        }
+        catch(Exception e){
+            response.put("error message",e.getMessage());
+        }
+
         return ResponseEntity.ok(response);
     }
 }

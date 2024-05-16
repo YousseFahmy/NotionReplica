@@ -8,6 +8,9 @@ public interface CommandInterface {
     int CREATE_WORKSPACE=1;
     int GET_PAGES = 2;
     int CREATE_PAGE = 3;
+    int GET_PAGE = 4;
+    int DELETE_WORKSPACE = 5;
+    int DELETE_PAGES=6;
 
     Object execute() throws Exception;
 }
