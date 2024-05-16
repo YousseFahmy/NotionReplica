@@ -28,7 +28,7 @@ public class Page {
     private Set<Page> subPagesIds  = new HashSet<Page>();
 
     @Field
-    private Set<Long> UDBIds = new HashSet<Long>();
+    private Set<String> UDBIds = new HashSet<>();
 
     @Field
     private Map<String,String>  pageContent = new HashMap<>();
