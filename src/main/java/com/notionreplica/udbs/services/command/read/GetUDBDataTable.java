@@ -12,9 +12,10 @@ public class GetUDBDataTable implements CommandInterface {
 
     @Override
     public Object execute() throws Exception {
-        UDBDataTable udbDataTable = udbDataTableRepo.findUDBDataTableByUdbDataTableID(tableID);
-        if(udbDataTable == null)
-            throw new Exception(tableID + " not found");
-        return udbDataTable;
+//        UDBDataTable udbDataTable = udbDataTableRepo.findUDBDataTableByUdbDataTableID(tableID);
+//		if(udbDataTable == null)
+//			throw new Exception(tableID + " not found");
+//		return udbDataTable;
+        return null;
     }
 }

@@ -20,17 +20,16 @@ public class deletePages implements CommandInterface {
     String workspaceId;
     @Override
     public Object execute() throws Exception {
-
         Optional<Workspace> userWorkspaceExists = workRepo.findById(workspaceId);
         if(!userWorkspaceExists.isPresent()){
             throw new WorkspaceNotFoundException("workspace does not exist");
         }
         Workspace userWorkSpace= userWorkspaceExists.get();
+
         Set<String> pagesToDelete= userWorkSpace.getAccessModifiers().keySet();
+        userWorkSpace.getAccessModifiers().clear();
+        workRepo.save(userWorkSpace);
         pageRepo.deleteAllById(pagesToDelete);
         return "pages deleted successfully";
-
-
-
     }
 }

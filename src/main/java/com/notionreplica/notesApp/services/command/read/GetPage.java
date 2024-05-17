@@ -23,19 +23,6 @@ public class GetPage implements CommandInterface {
         if(!ObjectId.isValid(pageId)){
             throw new InvalidObjectIdException("invalid page id");
         }
-        if(!ObjectId.isValid(workspaceId)){
-            throw new InvalidObjectIdException("invalid workspace id");
-        }
-        Optional<Workspace> workspaceExists=workRepo.findById(workspaceId);
-        if(!workspaceExists.isPresent()){
-            throw new WorkspaceNotFoundException("this workspace id does not exist");
-        }
-
-        Workspace userWorkspace=workspaceExists.get();
-        if(userWorkspace.getAccessModifiers().get(pageId)==null) {
-           throw new AccessDeniedException("this workspace does not contain this page");
-        }
-
         return pageRepo.findById(pageId).get();
     }
 }

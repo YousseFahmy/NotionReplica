@@ -1,6 +1,7 @@
 package com.notionreplica.notesApp.services;
 
 import com.notionreplica.notesApp.entities.AccessModifier;
+import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.services.command.CommandFactory;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import com.notionreplica.notesApp.entities.Page;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.notionreplica.notesApp.services.command.CommandInterface.DELETE_WORKSPACE;
+import static com.notionreplica.notesApp.services.command.CommandInterface.GET_WORKSPACE;
 
 @Service
 public class NotesService{
@@ -37,19 +39,17 @@ public class NotesService{
     }
 
     public Page getPage(String pageId,String workspaceId) throws Exception{
-
             return (Page) CommandFactory.create(CommandInterface.GET_PAGE,pageId,workspaceId).execute();
-
-
     }
 
-    public String deletePagesByWorkSpaceId(String workspaceId){
-        try{
+    public String deletePagesByWorkSpaceId(String workspaceId)throws Exception{
             return (String) CommandFactory.create(CommandInterface.DELETE_PAGES,workspaceId).execute();
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
+    }
+    public String deletePage(String pageId,String workspaceId)throws Exception{
+        return (String) CommandFactory.create(CommandInterface.DELETE_PAGE,pageId,workspaceId).execute();
+    }
 
+    public List<Page> getSharedPages(Workspace userWorkspace) throws Exception{
+        return (List<Page>) CommandFactory.create(CommandInterface.GET_SHARED_PAGES,userWorkspace).execute();
     }
 }

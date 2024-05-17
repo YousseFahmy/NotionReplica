@@ -12,8 +12,9 @@ public class DeleteUDBDataTable implements CommandInterface {
 
     @Override
     public Object execute() throws Exception {
-        UDBDataTable udbDataTable = udbDataTableRepo.findUDBDataTableByUdbDataTableID(tableID);
-        udbDataTableRepo.delete(udbDataTable);
-        return "Successfully deleted";
+//        UDBDataTable udbDataTable = udbDataTableRepo.findUDBDataTableByUdbDataTableID(tableID);
+//        udbDataTableRepo.delete(udbDataTable);
+//        return "Successfully deleted";
+        return null;
     }
 }

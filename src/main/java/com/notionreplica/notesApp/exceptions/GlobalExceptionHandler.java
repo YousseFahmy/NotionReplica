@@ -1,16 +1,31 @@
 package com.notionreplica.notesApp.exceptions;
 
-import com.notionreplica.notesApp.controller.NotesController;
-import com.notionreplica.notesApp.controller.WorkspaceController;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.nio.file.AccessDeniedException;
+
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(InvalidObjectIdException.class)
+    public ResponseEntity<String> handleInvalidObjectIdException(InvalidObjectIdException ex) {
+        return new ResponseEntity<>("The provided object id provided isn't in a proper format", HttpStatus.I_AM_A_TEAPOT);
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+        return new ResponseEntity<>("Access Denied", HttpStatus.UNAUTHORIZED);
+    }
 
-
-    @ExceptionHandler({WorkspaceController.class})
-    public String handleWorkspaceNotFoundException(WorkspaceNotFoundException exception){
-        return HttpStatus.INTERNAL_SERVER_ERROR+ exception.getMessage();
+    @ExceptionHandler(WorkspaceNotFoundException.class)
+    public ResponseEntity<String> handleWorkspaceNotFoundException(WorkspaceNotFoundException ex) {
+        return new ResponseEntity<>("The workspace id provided doesn't exist", HttpStatus.NOT_FOUND);
     }
 }
