@@ -1,5 +1,6 @@
 package com.notionreplica.notesApp.controller;
 
+import com.notionreplica.notesApp.exceptions.UserDoesNotExistException;
 import com.notionreplica.notesApp.entities.AccessModifier;
 import com.notionreplica.notesApp.entities.Page;
 import com.notionreplica.notesApp.entities.Workspace;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/user/{userId}/workspace/{workspaceId}/notes")
@@ -22,10 +25,13 @@ public class NotesController {
     private AuthorizationService authorizationService;
 
     @PostMapping("/createPage")
-    public ResponseEntity<Map<String, Object>> addPage(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> addPage(@PathVariable("userId") UUID userId,
                                                        @PathVariable("workspaceId")String workspaceId,
                                                        @RequestParam(name = "accessModifier") String accessModifier,
                                                        @RequestParam(name = "parent") String parent) throws Exception{
+        CompletableFuture<Boolean> userExistsFuture = authorizationService.doesUserExistRequest(userId);
+        boolean userExists = userExistsFuture.get();
+        if(!userExists) throw new UserDoesNotExistException("");
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
         Page newPage;
         try {
@@ -39,7 +45,7 @@ public class NotesController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getPages(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> getPages(@PathVariable("userId") UUID userId,
                                                         @PathVariable("workspaceId")String workspaceId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
         Map<String, Object> response = new HashMap<>();
@@ -47,9 +53,9 @@ public class NotesController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/getSharedPages/{requesterId}")
-    public ResponseEntity<Map<String, Object>> getSharedPages(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> getSharedPages(@PathVariable("userId") UUID userId,
                                                               @PathVariable("workspaceId")String workspaceId,
-                                                              @PathVariable("requesterId")long requesterId) throws Exception {
+                                                              @PathVariable("requesterId")UUID requesterId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
         boolean isRequesterAuthorized = authorizationService.isRequesterAuthorized(userWorkspace,requesterId);
         Map<String, Object> response = new HashMap<>();
@@ -57,7 +63,7 @@ public class NotesController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{pageId}")
-    public ResponseEntity<Map<String, Object>> getPage(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> getPage(@PathVariable("userId") UUID userId,
                                                        @PathVariable("pageId") String pageId,
                                                        @PathVariable("workspaceId")String workspaceId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
@@ -67,7 +73,7 @@ public class NotesController {
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/deletePages")
-    public ResponseEntity<Map<String, Object>> deletePages(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> deletePages(@PathVariable("userId") UUID userId,
                                                            @PathVariable("workspaceId")String workspaceId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
         Map<String, Object> response = new HashMap<>();
@@ -75,7 +81,7 @@ public class NotesController {
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/{pageId}/deletePage")
-    public ResponseEntity<Map<String, Object>> deletePages(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> deletePages(@PathVariable("userId") UUID userId,
                                                            @PathVariable("workspaceId")String workspaceId,
                                                            @PathVariable("pageId")String pageId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);

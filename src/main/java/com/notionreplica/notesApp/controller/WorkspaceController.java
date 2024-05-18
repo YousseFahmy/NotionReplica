@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user/{userId}/workspace")
@@ -21,21 +22,21 @@ public class WorkspaceController extends Throwable{
     private AuthorizationService authorizationService;
 
     @PostMapping("/createWorkSpace")
-    public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userId") long userId) throws Exception{
+    public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userId") UUID userId) throws Exception{
         Map<String, Object> response = new HashMap<>();
         Workspace userWorkSpace =workSpaceService.createWorkSpace(userId);
         response.put("workSpace",userWorkSpace);
         return ResponseEntity.ok(response);
     }
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getWorkSpace(@PathVariable("userId") long userId) throws Exception{
+    public ResponseEntity<Map<String, Object>> getWorkSpace(@PathVariable("userId") UUID userId) throws Exception{
         Workspace userWorkSpace = workSpaceService.getWorkSpace(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("workspace",userWorkSpace);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/addUserToWorkSpace")
-    public ResponseEntity<Map<String, Object>> addUserToWorkSpace(@PathVariable("userId") long userId,
+    public ResponseEntity<Map<String, Object>> addUserToWorkSpace(@PathVariable("userId") UUID userId,
                                                                   @RequestBody Map<String,String> request)throws Exception{
         long newUserId=Long.parseLong(request.get("newUserId")) ;
         Map<String, Object> response = new HashMap<>();
@@ -44,7 +45,7 @@ public class WorkspaceController extends Throwable{
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/deleteWorkSpace")
-    public ResponseEntity<Map<String, Object>> deleteWorkSpace(@PathVariable("userId") long userId) throws Exception{
+    public ResponseEntity<Map<String, Object>> deleteWorkSpace(@PathVariable("userId") UUID userId) throws Exception{
         Map<String, Object> response = new HashMap<>();
         String userWorkSpace =workSpaceService.deleteWorkSpace(userId);
         response.put("workspace",userWorkSpace);

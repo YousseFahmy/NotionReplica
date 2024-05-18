@@ -7,12 +7,13 @@ import com.notionreplica.notesApp.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class AddUserToWorkSpace implements CommandInterface {
     WorkspaceRepo workspaceRepo;
-    long userId;
-    long newUserId;
+    UUID userId;
+    UUID newUserId;
 
     @Override
     public Object execute() throws Exception {

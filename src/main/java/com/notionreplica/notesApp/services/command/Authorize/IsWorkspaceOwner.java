@@ -10,10 +10,12 @@ import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 
 import java.nio.file.AccessDeniedException;
+import java.util.UUID;
+
 @AllArgsConstructor
 public class IsWorkspaceOwner implements CommandInterface {
     WorkspaceRepo workRepo;
-    long userId;
+    UUID userId;
     String workspaceId;
     @Override
     public Object execute() throws Exception {

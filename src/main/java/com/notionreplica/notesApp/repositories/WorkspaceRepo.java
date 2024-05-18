@@ -6,12 +6,13 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface WorkspaceRepo extends MongoRepository <Workspace, String> {
-    Workspace findWorkspaceByUserId(long userId);
+    Workspace findWorkspaceByUserId(UUID userId);
     //@Query(value ="{'userId' : ?0}")
-    void deleteWorkSpaceByUserId(long userId);
+    void deleteWorkSpaceByUserId(UUID userId);
 
     Workspace deletePagesByWorkSpaceId(String workspaceId);
 }

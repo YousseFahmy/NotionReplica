@@ -8,11 +8,12 @@ import lombok.AllArgsConstructor;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class GetWorkspace implements CommandInterface {
     WorkspaceRepo workRepo;
-    long userId;
+    UUID userId;
     @Override
     public Object execute() throws Exception {
         Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);

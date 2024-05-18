@@ -6,11 +6,12 @@ import com.notionreplica.notesApp.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class CreateWorkspace implements CommandInterface {
     WorkspaceRepo workRepo;
-    long userId;
+    UUID userId;
     @Override
     public Object execute() {
         Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);

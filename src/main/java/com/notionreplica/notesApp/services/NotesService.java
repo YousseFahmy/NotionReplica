@@ -7,8 +7,11 @@ import com.notionreplica.notesApp.services.command.CommandInterface;
 import com.notionreplica.notesApp.entities.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.notionreplica.notesApp.services.command.CommandInterface.DELETE_WORKSPACE;
 import static com.notionreplica.notesApp.services.command.CommandInterface.GET_WORKSPACE;
@@ -52,4 +55,6 @@ public class NotesService{
     public List<Page> getSharedPages(Workspace userWorkspace) throws Exception{
         return (List<Page>) CommandFactory.create(CommandInterface.GET_SHARED_PAGES,userWorkspace).execute();
     }
+
+
 }

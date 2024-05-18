@@ -6,10 +6,12 @@ import com.notionreplica.notesApp.repositories.WorkspaceRepo;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 public class deleteWorkSpace implements CommandInterface {
     WorkspaceRepo workRepo;
-    long userId;
+    UUID userId;
     @Override
     public Object execute() throws Exception {
         Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);

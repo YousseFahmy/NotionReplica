@@ -19,10 +19,10 @@ public class Workspace {
 
     @Field
     @Indexed(unique = true)
-    private long userId ;
+    private UUID userId ;
 
     @Field
-    private Set<Long> usersWithAccess = new HashSet<Long>();
+    private Set<UUID> usersWithAccess = new HashSet<UUID>();
     @Field
     private Map <String, AccessModifier> accessModifiers = new HashMap<String,AccessModifier>();
 
@@ -33,7 +33,7 @@ public class Workspace {
     @LastModifiedDate
     @Field("updated_at")
     private Date updatedAt;
-    public Workspace(long userId){
+    public Workspace(UUID userId){
         this.userId= userId;
     }
 }

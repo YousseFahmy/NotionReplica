@@ -28,4 +28,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleWorkspaceNotFoundException(WorkspaceNotFoundException ex) {
         return new ResponseEntity<>("The workspace id provided doesn't exist", HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(UserDoesNotExistException.class)
+    public ResponseEntity<String> handleUserDoesNotExistException(UserDoesNotExistException ex) {
+        return new ResponseEntity<>("The user provided doesn't exist", HttpStatus.NOT_FOUND);
+    }
+
 }

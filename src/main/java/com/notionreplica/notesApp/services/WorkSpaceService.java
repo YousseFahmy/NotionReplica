@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.notionreplica.notesApp.services.command.CommandInterface.*;
 
@@ -15,17 +16,17 @@ import static com.notionreplica.notesApp.services.command.CommandInterface.*;
 public class WorkSpaceService {
     @Autowired
     private CommandFactory CommandFactory;
-    public Workspace createWorkSpace(long userId) throws Exception{
+    public Workspace createWorkSpace(UUID userId) throws Exception{
             return (Workspace) CommandFactory.create(CREATE_WORKSPACE,userId).execute();
     }
-    public Workspace getWorkSpace(long userId) throws Exception{
+    public Workspace getWorkSpace(UUID userId) throws Exception{
             return (Workspace) CommandFactory.create(GET_WORKSPACE,userId).execute();
     }
-    public String deleteWorkSpace(long userId) throws Exception {
+    public String deleteWorkSpace(UUID userId) throws Exception {
             return (String) CommandFactory.create(DELETE_WORKSPACE,userId).execute();
     }
 
-    public Workspace addUserToWorkspace(long userId, long newUserId) throws Exception {
+    public Workspace addUserToWorkspace(UUID userId, long newUserId) throws Exception {
         return (Workspace) CommandFactory.create(ADD_USER_TO_WORKSPACE,userId,newUserId).execute();
     }
 }
