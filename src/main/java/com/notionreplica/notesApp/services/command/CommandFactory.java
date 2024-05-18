@@ -18,6 +18,9 @@ import com.notionreplica.notesApp.services.command.read.GetPages;
 import com.notionreplica.notesApp.services.command.read.GetSharedPages;
 import com.notionreplica.notesApp.services.command.read.GetWorkspace;
 
+import com.notionreplica.notesApp.services.command.update.UpdatePageBackground;
+import com.notionreplica.notesApp.services.command.update.UpdatePageIcon;
+import com.notionreplica.notesApp.services.command.update.UpdatePageTitle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,6 +62,12 @@ public class CommandFactory {
                 return new IsRequesterAuthorized((Workspace) params[0],(UUID) params[1]);
             case ADD_USER_TO_WORKSPACE:
                 return new AddUserToWorkSpace(workspaceRepo,(UUID)params[0],(UUID)params[1]);
+            case UPDATE_PAGE_TITLE:
+                return new UpdatePageTitle(pageRepo,(String)params[0],(String)params[1]);
+            case UPDATE_PAGE_BACKGROUND:
+                return new UpdatePageBackground(pageRepo,(String)params[0],(long)params[1]);
+            case UPDATE_PAGE_ICON:
+                return new UpdatePageIcon(pageRepo,(String)params[0],(long)params[1]);
         }
         return null;
     }
