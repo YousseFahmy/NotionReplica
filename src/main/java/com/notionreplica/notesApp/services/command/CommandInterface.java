@@ -19,5 +19,11 @@ public interface CommandInterface {
     int IS_PAGE_OWNER= 10;
     int IS_REQUESTER_AUTHORIZED =11;
     int ADD_USER_TO_WORKSPACE =12;
+
+    int UPDATE_PAGE_TITLE = 13;
+    int UPDATE_PAGE_BACKGROUND=14;
+
+    int UPDATE_PAGE_ICON=15;
     Object execute() throws Exception;
+
 }

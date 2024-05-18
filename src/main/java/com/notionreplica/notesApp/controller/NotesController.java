@@ -5,6 +5,7 @@ import com.notionreplica.notesApp.entities.Page;
 import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
+import com.notionreplica.notesApp.services.command.CommandInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,4 +85,6 @@ public class NotesController {
         response.put("Page", notesService.deletePage(pageId,workspaceId));
         return ResponseEntity.ok(response);
     }
+
+
 }

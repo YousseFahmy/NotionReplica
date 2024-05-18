@@ -28,4 +28,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleWorkspaceNotFoundException(WorkspaceNotFoundException ex) {
         return new ResponseEntity<>("The workspace id provided doesn't exist", HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(PageNotFoundException.class)
+    public ResponseEntity<String> handlePageNotFoundException(PageNotFoundException ex) {
+        return new ResponseEntity<>("The page id provided doesn't exist", HttpStatus.NOT_FOUND);
+    }
 }

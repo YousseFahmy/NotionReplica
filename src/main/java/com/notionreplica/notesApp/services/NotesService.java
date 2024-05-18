@@ -52,4 +52,19 @@ public class NotesService{
     public List<Page> getSharedPages(Workspace userWorkspace) throws Exception{
         return (List<Page>) CommandFactory.create(CommandInterface.GET_SHARED_PAGES,userWorkspace).execute();
     }
+
+    public Page updatePageTitle(String pageId, String pageTitle) throws Exception {
+
+        return (Page) CommandFactory.create(CommandInterface.UPDATE_PAGE_TITLE, pageId,pageTitle).execute();
+    }
+
+    public Page updatePageBackground(String pageId, long backgroundId) throws Exception {
+
+        return (Page) CommandFactory.create(CommandInterface.UPDATE_PAGE_BACKGROUND, pageId,backgroundId).execute();
+    }
+    public Page updatePageIcon(String pageId, long IconId) throws Exception {
+
+        return (Page) CommandFactory.create(CommandInterface.UPDATE_PAGE_ICON, pageId,IconId).execute();
+    }
+
 }
