@@ -23,6 +23,6 @@ public class UpdatePageTitle implements CommandInterface {
         Page userPage = userPageExists.get();
         pageTitle =pageTitle.equals("") ? "untitled" : pageTitle;
         userPage.setPageTitle(pageTitle);
-        return "Title updated successfully";
+        return pageRepo.save(userPage);
     }
 }

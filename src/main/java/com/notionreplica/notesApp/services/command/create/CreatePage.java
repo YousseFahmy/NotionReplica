@@ -31,7 +31,7 @@ public class CreatePage implements CommandInterface {
             if(ObjectId.isValid(parentId)){
                 Optional<Page> parentPage=pageRepo.findById(parentId);
                 if(parentPage.isPresent()){
-                    parentPage.get().getSubPagesIds().add(newPage);
+                    parentPage.get().getSubPagesIds().add(newPage.getPageId());
                     pageRepo.save(parentPage.get());
                 }
             }

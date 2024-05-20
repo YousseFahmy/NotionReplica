@@ -22,6 +22,7 @@ public class AuthorizationService {
     @Autowired
     private CommandFactory CommandFactory;
     private final ConcurrentMap<String, CompletableFuture<Boolean>> pendingRequests = new ConcurrentHashMap<>();
+    @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
     private static final String REQUEST_TOPIC = "userRequestTopic";
     private static final String REPLY_TOPIC = "userReplyTopic";

@@ -1,5 +1,6 @@
 package com.notionreplica.notesApp.services.command.delete;
 
+import com.notionreplica.notesApp.entities.AccessModifier;
 import com.notionreplica.notesApp.entities.Page;
 import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.exceptions.WorkspaceNotFoundException;
@@ -27,9 +28,10 @@ public class deletePages implements CommandInterface {
         Workspace userWorkSpace= userWorkspaceExists.get();
 
         Set<String> pagesToDelete= userWorkSpace.getAccessModifiers().keySet();
-        userWorkSpace.getAccessModifiers().clear();
+        for(String page : pagesToDelete){
+            userWorkSpace.getAccessModifiers().put(page,AccessModifier.DELETED);
+        }
         workRepo.save(userWorkSpace);
-        pageRepo.deleteAllById(pagesToDelete);
         return "pages deleted successfully";
     }
 }

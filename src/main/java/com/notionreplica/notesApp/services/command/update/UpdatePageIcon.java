@@ -12,7 +12,7 @@ import java.util.Optional;
 public class UpdatePageIcon implements CommandInterface {
     PageRepo pageRepo;
     String pageId;
-    Long IconId;
+    String IconURL;
     @Override
     public Object execute() throws Exception {
         Optional<Page> userPageExists = pageRepo.findById(pageId);
@@ -20,8 +20,7 @@ public class UpdatePageIcon implements CommandInterface {
             throw new PageNotFoundException("");
         }
         Page userPage = userPageExists.get();
-        userPage.setIconId(IconId);
-
-        return "icon updated successfully";
+        userPage.setIconURL(IconURL);
+        return pageRepo.save(userPage);
     }
 }

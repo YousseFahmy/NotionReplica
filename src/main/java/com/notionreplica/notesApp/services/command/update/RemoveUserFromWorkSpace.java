@@ -6,11 +6,9 @@ import com.notionreplica.notesApp.repositories.WorkspaceRepo;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 
-import java.util.Optional;
 import java.util.UUID;
-//todo remove user from workspace
 @AllArgsConstructor
-public class AddUserToWorkSpace implements CommandInterface {
+public class RemoveUserFromWorkSpace implements CommandInterface {
     WorkspaceRepo workspaceRepo;
     UUID userId;
     UUID newUserId;
@@ -19,7 +17,7 @@ public class AddUserToWorkSpace implements CommandInterface {
     public Object execute() throws Exception {
         Workspace userWorkspace = workspaceRepo.findWorkspaceByUserId(userId);
         if(userWorkspace == null) throw new WorkspaceNotFoundException("The user id doesn't have a workspace");
-        userWorkspace.getUsersWithAccess().add(newUserId);
+        userWorkspace.getUsersWithAccess().remove(newUserId);
         return workspaceRepo.save(userWorkspace);
     }
 }

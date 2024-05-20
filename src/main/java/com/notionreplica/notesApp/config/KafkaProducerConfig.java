@@ -17,7 +17,6 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootStrapServers;
 
-    @Bean
     public Map<String, Object> producerConfig(){
         Map<String, Object> props = new HashMap<String, Object>();
 
@@ -29,8 +28,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory(Map<String, Object> producerConfig){
-        return new DefaultKafkaProducerFactory<>(producerConfig);
+    public ProducerFactory<String, Object> producerFactory(){
+        return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean

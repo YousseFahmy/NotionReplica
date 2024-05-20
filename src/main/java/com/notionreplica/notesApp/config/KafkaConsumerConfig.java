@@ -18,7 +18,7 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootStrapServers;
 
-    @Bean
+
     public Map<String, Object> consumerConfig(){
         Map<String, Object> props = new HashMap<String, Object>();
 
@@ -30,11 +30,11 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory(Map<String, Object> consumerConfig){
-        return new DefaultKafkaConsumerFactory<>(consumerConfig);
+    public ConsumerFactory<String, Object> consumerFactory(){
+        return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
-
+    @Bean
     public KafkaListenerContainerFactory<
             ConcurrentMessageListenerContainer<String, Object>> factory(
                     ConsumerFactory<String, Object> consumerFactory

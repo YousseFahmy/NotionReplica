@@ -1,29 +1,18 @@
 package com.notionreplica.notesApp.services.command;
 
-import com.notionreplica.notesApp.entities.AccessModifier;
-import com.notionreplica.notesApp.entities.Workspace;
-import com.notionreplica.notesApp.repositories.PageRepo;
-import com.notionreplica.notesApp.repositories.WorkspaceRepo;
-import com.notionreplica.notesApp.services.command.Authorize.IsRequesterAuthorized;
-import com.notionreplica.notesApp.services.command.Authorize.IsWorkspaceOwner;
-import com.notionreplica.notesApp.services.command.Authorize.IsPageOwner;
-import com.notionreplica.notesApp.services.command.create.AddUserToWorkSpace;
-import com.notionreplica.notesApp.services.command.create.CreatePage;
-import com.notionreplica.notesApp.services.command.create.CreateWorkspace;
-import com.notionreplica.notesApp.services.command.delete.deletePage;
-import com.notionreplica.notesApp.services.command.delete.deletePages;
-import com.notionreplica.notesApp.services.command.delete.deleteWorkSpace;
-import com.notionreplica.notesApp.services.command.read.GetPage;
-import com.notionreplica.notesApp.services.command.read.GetPages;
-import com.notionreplica.notesApp.services.command.read.GetSharedPages;
-import com.notionreplica.notesApp.services.command.read.GetWorkspace;
+import com.notionreplica.notesApp.entities.*;
+import com.notionreplica.notesApp.repositories.*;
+import com.notionreplica.notesApp.services.command.Authorize.*;
+import com.notionreplica.notesApp.services.command.create.*;
+import com.notionreplica.notesApp.services.command.update.*;
+import com.notionreplica.notesApp.services.command.delete.*;
+import com.notionreplica.notesApp.services.command.read.*;
 
-import com.notionreplica.notesApp.services.command.update.UpdatePageBackground;
-import com.notionreplica.notesApp.services.command.update.UpdatePageIcon;
-import com.notionreplica.notesApp.services.command.update.UpdatePageTitle;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.notionreplica.notesApp.services.command.CommandInterface.*;
@@ -49,7 +38,7 @@ public class CommandFactory {
             case GET_SHARED_PAGES:
                 return new GetSharedPages(pageRepo,(Workspace)params[0]);
             case DELETE_WORKSPACE:
-                return new deleteWorkSpace(workspaceRepo, (UUID) params[0]);
+                return new deleteWorkSpace(workspaceRepo,pageRepo, (UUID) params[0]);
             case DELETE_PAGES:
                 return new deletePages(pageRepo,workspaceRepo, (String) params[0]);
             case DELETE_PAGE:
@@ -62,12 +51,20 @@ public class CommandFactory {
                 return new IsRequesterAuthorized((Workspace) params[0],(UUID) params[1]);
             case ADD_USER_TO_WORKSPACE:
                 return new AddUserToWorkSpace(workspaceRepo,(UUID)params[0],(UUID)params[1]);
+            case REMOVE_USER_FROM_WORKSPACE:
+                return new RemoveUserFromWorkSpace(workspaceRepo,(UUID)params[0],(UUID)params[1]);
             case UPDATE_PAGE_TITLE:
                 return new UpdatePageTitle(pageRepo,(String)params[0],(String)params[1]);
             case UPDATE_PAGE_BACKGROUND:
-                return new UpdatePageBackground(pageRepo,(String)params[0],(long)params[1]);
+                return new UpdatePageBackground(pageRepo,(String)params[0],(String)params[1]);
             case UPDATE_PAGE_ICON:
-                return new UpdatePageIcon(pageRepo,(String)params[0],(long)params[1]);
+                return new UpdatePageIcon(pageRepo,(String)params[0],(String)params[1]);
+            case UPDATE_PAGE_CONTNET:
+                return  new UpdatePageContent(pageRepo,(String)params[0],(List<ContentBlock>)params[1]);
+            case MOVE_SUBPAGE:
+                return new MoveSubPage(pageRepo,(String)params[0],(String)params[1],(String)params[2]);
+            case CHANGE_ACCESS_MODIFEIR:
+                return  new ChangeAccessModifeir(workspaceRepo,(Workspace)params[0],(AccessModifier)params[1],(String)params[2]);
         }
         return null;
     }

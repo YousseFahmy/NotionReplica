@@ -19,19 +19,19 @@ public class Page {
     private String workspaceId;
 
     @Field
-    private long iconId = -1;
+    private String iconURL="";
 
     @Field
-    private long backgroundId = -1;
+    private String backgroundURL="";
 
     @DBRef
-    private Set<Page> subPagesIds  = new HashSet<Page>();
+    private Set<String> subPagesIds  = new HashSet<String>();
 
     @Field
     private Set<String> UDBIds = new HashSet<>();
 
     @Field
-    private Map<String,String>  pageContent = new HashMap<>();
+    private List<ContentBlock> pageContent = new ArrayList<>();
 
     @Field
     private String pageTitle = "Untitled";
