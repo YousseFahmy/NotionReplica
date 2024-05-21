@@ -21,7 +21,6 @@ public class UDBPageService extends Throwable{
     @Autowired
     private CommandFactory commandFactory;
 
-
     private final ConcurrentMap<String, CompletableFuture<String>> pendingRequests = new ConcurrentHashMap<>();
     @Autowired
     private KafkaTemplate<String,String> kafkaTemplate;

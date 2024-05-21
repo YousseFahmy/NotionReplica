@@ -1,6 +1,7 @@
 package com.notionreplica.notesApp.controller;
 
 import com.notionreplica.notesApp.entities.*;
+import com.notionreplica.notesApp.exceptions.UserDoesNotExistException;
 import com.notionreplica.notesApp.services.FireBaseStorageService;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
@@ -14,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 @RestController
@@ -26,52 +30,14 @@ public class NotesController {
     @Autowired
     private FireBaseStorageService fireBaseStorageService;
 
-
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
-    private static final String REPLY_TOPIC = "pageReplyTopic";
-
-    @KafkaListener(topics = "pageRequestTopic", groupId = "notesServiceGroup")
-    public void listenForRequests(ConsumerRecord<String, String> record) throws Exception {
-        String message = record.value();
-
-        org.json.JSONObject jsonObject = new org.json.JSONObject(message);
-        String correlationId = jsonObject.getString("correlationId");
-        String username = jsonObject.getString("username");
-        String workspaceId = jsonObject.getString("workspaceId");
-        String pageId = jsonObject.getString("pageId");
-
-        Workspace userWorkspace = authorizationService.isWorkSpaceOwner(username, workspaceId);
-        boolean isPageOwner = authorizationService.isPageOwner(userWorkspace, pageId);
-
-        if (!isPageOwner) {
-            throw new AccessDeniedException("You do not have permission to access this page");
-        }
-
-
-        AccessModifier accessModifier = userWorkspace.getAccessModifiers().get(pageId);
-        System.out.println(workspaceId + accessModifier + pageId);
-        Page newPage = notesService.createPage(workspaceId, accessModifier, pageId);
-
-
-
-        String response = String.format("{\"correlationId\":\"%s\", \"pageId\":\"%s\" }",
-                correlationId,newPage.getPageId());
-
-        kafkaTemplate.send(REPLY_TOPIC, response);
-    }
-
-
-
-
     @PostMapping("/createPage")
     public ResponseEntity<Map<String, Object>> addPage(@PathVariable("userName") String userName,
                                                        @PathVariable("workspaceId")String workspaceId,
                                                        @RequestParam(name = "accessModifier") String accessModifier,
                                                        @RequestParam(name = "parent") String parent) throws Exception{
-//      CompletableFuture<Boolean> userExistsFuture = authorizationService.doesUserExistRequest(userName);
-//      boolean userExists = userExistsFuture.get();
-//      if(!userExists) throw new UserDoesNotExistException("");
+//        CompletableFuture<Boolean> userExistsFuture = notesService.doesUserExistRequest(userName);
+//        boolean userExists = userExistsFuture.get();
+//        if(!userExists) throw new UserDoesNotExistException("");
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         Page newPage;
         try {
@@ -83,7 +49,6 @@ public class NotesController {
         response.put("newPage", newPage);
         return ResponseEntity.ok(response);
     }
-
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getPages(@PathVariable("userName") String userName,
                                                         @PathVariable("workspaceId")String workspaceId) throws Exception {

@@ -19,32 +19,7 @@ import static com.notionreplica.notesApp.services.command.CommandInterface.*;
 public class AuthorizationService {
     @Autowired
     private CommandFactory commandFactory;
-    private final ConcurrentMap<String, CompletableFuture<Boolean>> pendingRequests = new ConcurrentHashMap<>();
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
-    private static final String REQUEST_TOPIC = "userRequestTopic";
-    private static final String REPLY_TOPIC = "userReplyTopic";
-    public CompletableFuture<Boolean> doesUserExistRequest(String username) {
-        String correlationId = java.util.UUID.randomUUID().toString();
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-        pendingRequests.put(correlationId, future);
-        Map<String,Object> requestMessage = new HashMap<>();
-        requestMessage.put("username",username);
-        requestMessage.put("correlationId",correlationId);
-        kafkaTemplate.send(REQUEST_TOPIC, requestMessage);
-        return future;
-    }
-    @KafkaListener(topics = REPLY_TOPIC, groupId = "notesServiceGroup")
-    public void listenForReplies(ConsumerRecord<String, Object> record) {
-        Map<String,Object> message = (Map<String, Object>) record.value();
-        String correlationId = (String)message.get("correlationId");
-        String username = (String)message.get("username");
-        boolean userExists =(boolean)message.get("userExists");
-        CompletableFuture<Boolean> future = pendingRequests.remove(correlationId);
-        if (future != null) {
-            future.complete(userExists);
-        }
-    }
+
 
     public  boolean isPageOwner(Workspace userWorkspace, String pageId) throws Exception{
         return (boolean) commandFactory.create(IS_PAGE_OWNER,userWorkspace,pageId).execute();
