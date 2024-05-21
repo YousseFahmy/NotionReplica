@@ -17,6 +17,6 @@ public class GetProperty implements CommandInterface {
         if(properties.isEmpty()) {
             throw new Exception(propertyID + " not found");
         }
-        return properties;
+        return properties.get();
     }
 }
