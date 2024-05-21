@@ -17,7 +17,7 @@ public class GetUDBDataTable implements CommandInterface {
         Optional<UDBDataTable> udbDataTable = udbDataTableRepo.findById(tableID);
 		if(udbDataTable.isEmpty())
 			throw new Exception(tableID + " not found");
-		return udbDataTable;
+		return udbDataTable.get();
 
     }
 }

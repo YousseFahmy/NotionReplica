@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/{userId}/workspace/udbTable/{UDBid}")
+@RequestMapping("/user/{userId}/workspace/{workspaceId}/notes/udbTable/{UDBid}")
 public class UDBPageController {
     @Autowired
     private UDBPageService pageService;
