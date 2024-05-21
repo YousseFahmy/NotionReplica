@@ -9,10 +9,9 @@ import com.notionreplica.notesApp.repositories.WorkspaceRepo;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 
 @AllArgsConstructor
 public class CreatePage implements CommandInterface {
@@ -31,8 +30,11 @@ public class CreatePage implements CommandInterface {
             if(ObjectId.isValid(parentId)){
                 Optional<Page> parentPage=pageRepo.findById(parentId);
                 if(parentPage.isPresent()){
-                    parentPage.get().getSubPagesIds().add(newPage.getPageId());
-                    pageRepo.save(parentPage.get());
+                    Page parentPages = parentPage.get();
+                    Set<String> newSubPages = parentPages.getSubPagesIds();
+                    newSubPages.add(newPage.getPageId());
+                    parentPages.setSubPagesIds(newSubPages);
+                    pageRepo.save(parentPages);
                 }
             }
             userWorkspace.getAccessModifiers().put(newPage.getPageId(),accessModifier);

@@ -24,7 +24,7 @@ public class Page {
     @Field
     private String backgroundURL="";
 
-    @DBRef
+    @Field
     private Set<String> subPagesIds  = new HashSet<String>();
 
     @Field

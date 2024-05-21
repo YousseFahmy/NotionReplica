@@ -6,13 +6,19 @@ import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.services.command.CommandFactory;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import com.notionreplica.notesApp.entities.Page;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.notionreplica.notesApp.services.command.CommandInterface.DELETE_WORKSPACE;
 import static com.notionreplica.notesApp.services.command.CommandInterface.GET_WORKSPACE;
@@ -22,24 +28,13 @@ public class NotesService{
     @Autowired
     private CommandFactory CommandFactory;
 
-    public Page createPage(String workspaceId , AccessModifier accessModifier,String parent){
-        try{
+    public Page createPage(String workspaceId , AccessModifier accessModifier,String parent) throws Exception {
             return (Page) CommandFactory.create(CommandInterface.CREATE_PAGE,workspaceId,accessModifier,parent).execute();
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
     }
-    public List<Object> getPages(String workspaceId){
 
-        try {
+    public List<Object> getPages(String workspaceId) throws Exception {
             return (List<Object>) CommandFactory.create(CommandInterface.GET_PAGES,workspaceId).execute();
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+
 
     }
 
@@ -84,4 +79,6 @@ public class NotesService{
         return  (Workspace) CommandFactory.create(CommandInterface.CHANGE_ACCESS_MODIFEIR,workSpace,accessModifier,pageId);
 
     }
+
+
 }

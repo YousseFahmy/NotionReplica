@@ -6,19 +6,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/user/{userId}/workspace/{workspaceId}/notes/udbTable/{UDBid}")
+@RequestMapping("/user/{userName}/workspace/{workspaceId}/notes/{pageID}/udbTable/{UDBid}")
 public class UDBPageController {
     @Autowired
     private UDBPageService pageService;
 
 
     @PostMapping("/createPage")
-    public ResponseEntity<Map<String, Object>> createPage(@RequestBody Map<String,String> reqBody, @PathVariable("UDBid") String tableID) throws Exception {
-        UDBPage page = pageService.createUDBPage( reqBody.get("pageID"), tableID);
+    public ResponseEntity<Map<String, Object>> createPage( @PathVariable("userName") String username,
+                                                           @PathVariable("workspaceId") String workspaceId,
+                                                           @PathVariable("pageID") String pageID,
+                                                           @PathVariable("UDBid") String tableID) throws Exception {
+        CompletableFuture<String> pageCreationRequest = pageService.createPageRequest(username,workspaceId,pageID);
+        String udbPageID = pageCreationRequest.get();
+        if(udbPageID==null) throw new AccessDeniedException("Ask btoo3 notes");
+
+        UDBPage page = pageService.createUDBPage(udbPageID, tableID);
         Map<String, Object> response = new HashMap<>();
         response.put("UDB page", page);
         return ResponseEntity.ok(response);
