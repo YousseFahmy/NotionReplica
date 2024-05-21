@@ -10,9 +10,9 @@ import java.util.UUID;
 
 @Repository
 public interface WorkspaceRepo extends MongoRepository <Workspace, String> {
-    Workspace findWorkspaceByUserId(UUID userId);
+    Workspace findWorkspaceByUserName(String userName);
     //@Query(value ="{'userId' : ?0}")
-    void deleteWorkSpaceByUserId(UUID userId);
+    void deleteWorkSpaceByUserName(String userName);
 
     Workspace deletePagesByWorkSpaceId(String workspaceId);
 }

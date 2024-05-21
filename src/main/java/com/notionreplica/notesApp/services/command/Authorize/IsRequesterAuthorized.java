@@ -10,11 +10,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class IsRequesterAuthorized implements CommandInterface {
     Workspace userWorkSpace;
-    UUID requesterId;
+    String requesterName;
 
     @Override
     public Object execute() throws Exception {
-        if(!userWorkSpace.getUsersWithAccess().contains(requesterId)){
+        if(!userWorkSpace.getUsersWithAccess().contains(requesterName)){
             throw new AccessDeniedException("");
         }
         return true;

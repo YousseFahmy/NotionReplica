@@ -13,10 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GetWorkspace implements CommandInterface {
     WorkspaceRepo workRepo;
-    UUID userId;
+    String userName;
     @Override
     public Object execute() throws Exception {
-        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);
+        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
         if(userWorkspaceExists==null) throw new WorkspaceNotFoundException("");
         return userWorkspaceExists;
     }

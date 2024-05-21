@@ -1,22 +1,15 @@
 package com.notionreplica.notesApp.controller;
-
 import com.notionreplica.notesApp.services.AuthorizationService;
 import com.notionreplica.notesApp.services.WorkSpaceService;
 import com.notionreplica.notesApp.entities.Workspace;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.MissingRequestValueException;
-import org.springframework.web.server.UnsatisfiedRequestParameterException;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/user/{userId}/workspace")
+@RequestMapping("/user/{userName}/workspace")
 public class WorkspaceController extends Throwable{
     @Autowired
     private WorkSpaceService workSpaceService;
@@ -24,43 +17,43 @@ public class WorkspaceController extends Throwable{
     private AuthorizationService authorizationService;
 
     @PostMapping("/createWorkSpace")
-    public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userId") UUID userId) throws Exception{
+    public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userName") String userName) throws Exception{
         Map<String, Object> response = new HashMap<>();
-        Workspace userWorkSpace =workSpaceService.createWorkSpace(userId);
+        Workspace userWorkSpace =workSpaceService.createWorkSpace(userName);
         response.put("workSpace",userWorkSpace);
         return ResponseEntity.ok(response);
     }
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getWorkSpace(@PathVariable("userId") UUID userId) throws Exception{
-        Workspace userWorkSpace = workSpaceService.getWorkSpace(userId);
+    public ResponseEntity<Map<String, Object>> getWorkSpace(@PathVariable("userName") String userName) throws Exception{
+        Workspace userWorkSpace = workSpaceService.getWorkSpace(userName);
         Map<String, Object> response = new HashMap<>();
         response.put("workspace",userWorkSpace);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/addUserToWorkSpace")
-    public ResponseEntity<Map<String, Object>> addUserToWorkSpace(@PathVariable("userId") UUID userId,
+    public ResponseEntity<Map<String, Object>> addUserToWorkSpace(@PathVariable("userName") String userName,
                                                                   @RequestBody Map<String,String> request)throws Exception{
-        if(request.get("newUserId")==null) throw new Exception("Please provide a user to add");
-        UUID newUserId= UUID.fromString(request.get("newUserId"));
+        if(request.get("newUserName")==null) throw new Exception("Please provide a user to add");
+        String newUserName= request.get("newUserName");
         Map<String, Object> response = new HashMap<>();
-        Workspace userWorkSpace = workSpaceService.addUserToWorkspace(userId, newUserId);
+        Workspace userWorkSpace = workSpaceService.addUserToWorkspace(userName, newUserName);
         response.put("workspace",userWorkSpace);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/removeUserFromWorkSpace")
-    public ResponseEntity<Map<String, Object>> removeUserFromWorkSpace(@PathVariable("userId") UUID userId,
+    public ResponseEntity<Map<String, Object>> removeUserFromWorkSpace(@PathVariable("userName") String userName,
                                                                   @RequestBody Map<String,String> request)throws Exception{
-        if(request.get("userIdToRemove")==null) throw new Exception("Please provide a user to remove");
-        UUID userIdToRemove = UUID.fromString(request.get("userIdToRemove"));
+        if(request.get("userNameToRemove")==null) throw new Exception("Please provide a user to remove");
+        String userNameToRemove = request.get("userNameToRemove");
         Map<String, Object> response = new HashMap<>();
-        Workspace userWorkSpace = workSpaceService.removeUserFromWorkspace(userId, userIdToRemove );
+        Workspace userWorkSpace = workSpaceService.removeUserFromWorkspace(userName, userNameToRemove );
         response.put("workspace",userWorkSpace);
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/deleteWorkSpace")
-    public ResponseEntity<Map<String, Object>> deleteWorkSpace(@PathVariable("userId") UUID userId) throws Exception{
+    public ResponseEntity<Map<String, Object>> deleteWorkSpace(@PathVariable("userName") String userName) throws Exception{
         Map<String, Object> response = new HashMap<>();
-        String userWorkSpace =workSpaceService.deleteWorkSpace(userId);
+        String userWorkSpace =workSpaceService.deleteWorkSpace(userName);
         response.put("workspace",userWorkSpace);
         return ResponseEntity.ok(response);
     }

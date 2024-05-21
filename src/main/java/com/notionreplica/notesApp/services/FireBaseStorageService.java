@@ -1,9 +1,5 @@
 package com.notionreplica.notesApp.services;
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
-import com.google.firebase.FirebaseApp;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +47,14 @@ public class FireBaseStorageService {
             throw new IOException("File not found: " + fileName);
         }
         return blob.getContent();
+    }
+    public Boolean deleteFile(String fileName) throws IOException {
+        BlobId blobId = BlobId.of(storageBucket, fileName);
+        boolean deleted = storage.delete(blobId);
+        if (!deleted) {
+            throw new IOException("Failed to delete file: " + fileName);
+        }
+        return deleted;
     }
     private void validateFile(MultipartFile file) {
         String contentType = file.getContentType();

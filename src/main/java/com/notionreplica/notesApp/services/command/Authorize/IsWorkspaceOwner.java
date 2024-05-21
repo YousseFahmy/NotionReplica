@@ -15,14 +15,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class IsWorkspaceOwner implements CommandInterface {
     WorkspaceRepo workRepo;
-    UUID userId;
+    String userName;
     String workspaceId;
     @Override
     public Object execute() throws Exception {
         if(!ObjectId.isValid(workspaceId)){
             throw new InvalidObjectIdException("invalid workspace id");
         }
-        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);
+        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
         if(userWorkspaceExists==null) throw new WorkspaceNotFoundException("");
         if(!userWorkspaceExists.getWorkSpaceId().equals((workspaceId))) throw new AccessDeniedException("");
         return userWorkspaceExists;

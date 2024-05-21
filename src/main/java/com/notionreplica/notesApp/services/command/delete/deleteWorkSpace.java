@@ -13,15 +13,15 @@ import java.util.UUID;
 public class deleteWorkSpace implements CommandInterface {
     WorkspaceRepo workRepo;
     PageRepo pageRepo;
-    UUID userId;
+    String userName;
     @Override
     public Object execute() throws Exception {
-        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);
+        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
         if(userWorkspaceExists ==null){
             throw new WorkspaceNotFoundException("workspace does not exist");
         }
         pageRepo.deleteAllById(userWorkspaceExists.getAccessModifiers().keySet());
-        workRepo.deleteWorkSpaceByUserId(userId);
+        workRepo.deleteWorkSpaceByUserName(userName);
         return "Workspace deleted successfully";
     }
 }

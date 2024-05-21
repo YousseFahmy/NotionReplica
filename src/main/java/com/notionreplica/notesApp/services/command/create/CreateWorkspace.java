@@ -11,12 +11,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreateWorkspace implements CommandInterface {
     WorkspaceRepo workRepo;
-    UUID userId;
+    String userName;
     @Override
     public Object execute() {
-        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserId(userId);
+        Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
         if (userWorkspaceExists==null) {
-        Workspace newWorkSpace = new Workspace(userId);
+        Workspace newWorkSpace = new Workspace(userName);
         return workRepo.save(newWorkSpace);}
         return userWorkspaceExists;
     }

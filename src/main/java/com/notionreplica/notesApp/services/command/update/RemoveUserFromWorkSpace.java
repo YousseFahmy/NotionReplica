@@ -10,14 +10,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RemoveUserFromWorkSpace implements CommandInterface {
     WorkspaceRepo workspaceRepo;
-    UUID userId;
-    UUID newUserId;
+    String userName;
+    String newUserName;
 
     @Override
     public Object execute() throws Exception {
-        Workspace userWorkspace = workspaceRepo.findWorkspaceByUserId(userId);
+        Workspace userWorkspace = workspaceRepo.findWorkspaceByUserName(userName);
         if(userWorkspace == null) throw new WorkspaceNotFoundException("The user id doesn't have a workspace");
-        userWorkspace.getUsersWithAccess().remove(newUserId);
+        userWorkspace.getUsersWithAccess().remove(newUserName);
         return workspaceRepo.save(userWorkspace);
     }
 }

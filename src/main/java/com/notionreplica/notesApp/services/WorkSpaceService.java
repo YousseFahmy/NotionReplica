@@ -16,20 +16,20 @@ import static com.notionreplica.notesApp.services.command.CommandInterface.*;
 public class WorkSpaceService {
     @Autowired
     private CommandFactory CommandFactory;
-    public Workspace createWorkSpace(UUID userId) throws Exception{
-            return (Workspace) CommandFactory.create(CREATE_WORKSPACE,userId).execute();
+    public Workspace createWorkSpace(String userName) throws Exception{
+            return (Workspace) CommandFactory.create(CREATE_WORKSPACE,userName).execute();
     }
-    public Workspace getWorkSpace(UUID userId) throws Exception{
-            return (Workspace) CommandFactory.create(GET_WORKSPACE,userId).execute();
+    public Workspace getWorkSpace(String userName) throws Exception{
+            return (Workspace) CommandFactory.create(GET_WORKSPACE,userName).execute();
     }
-    public String deleteWorkSpace(UUID userId) throws Exception {
-            return (String) CommandFactory.create(DELETE_WORKSPACE,userId).execute();
+    public String deleteWorkSpace(String userName) throws Exception {
+            return (String) CommandFactory.create(DELETE_WORKSPACE,userName).execute();
     }
 
-    public Workspace addUserToWorkspace(UUID userId, UUID newUserId) throws Exception {
-        return (Workspace) CommandFactory.create(ADD_USER_TO_WORKSPACE,userId,newUserId).execute();
+    public Workspace addUserToWorkspace(String userName, String newUserName) throws Exception {
+        return (Workspace) CommandFactory.create(ADD_USER_TO_WORKSPACE,userName,newUserName).execute();
     }
-    public Workspace removeUserFromWorkspace(UUID userId, UUID newUserId) throws Exception {
-        return (Workspace) CommandFactory.create(REMOVE_USER_FROM_WORKSPACE,userId,newUserId).execute();
+    public Workspace removeUserFromWorkspace(String userName, String newUserName) throws Exception {
+        return (Workspace) CommandFactory.create(REMOVE_USER_FROM_WORKSPACE,userName,newUserName).execute();
     }
 }

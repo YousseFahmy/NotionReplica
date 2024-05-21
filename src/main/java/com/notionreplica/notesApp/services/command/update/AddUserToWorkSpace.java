@@ -12,14 +12,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AddUserToWorkSpace implements CommandInterface {
     WorkspaceRepo workspaceRepo;
-    UUID userId;
-    UUID newUserId;
+    String userName;
+    String newUserName;
 
     @Override
     public Object execute() throws Exception {
-        Workspace userWorkspace = workspaceRepo.findWorkspaceByUserId(userId);
+        Workspace userWorkspace = workspaceRepo.findWorkspaceByUserName(userName);
         if(userWorkspace == null) throw new WorkspaceNotFoundException("The user id doesn't have a workspace");
-        userWorkspace.getUsersWithAccess().add(newUserId);
+        userWorkspace.getUsersWithAccess().add(newUserName);
         return workspaceRepo.save(userWorkspace);
     }
 }
