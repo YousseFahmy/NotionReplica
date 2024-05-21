@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UDBPageRepo extends MongoRepository<UDBPage, String> {
-    UDBPage findUDBPageByUdbPageID(String id);
+
 }

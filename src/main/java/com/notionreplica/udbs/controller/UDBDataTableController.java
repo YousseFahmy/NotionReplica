@@ -7,10 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/{userId}/workspace")
+@RequestMapping("/user/{userId}/workspace/{workspaceId}/notes")
 public class UDBDataTableController {
     @Autowired
     private UDBDataTableService udbDataTableService;
@@ -23,6 +24,14 @@ public class UDBDataTableController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/udbTable/{UDBid}/udbPages")
+    public ResponseEntity<Map<String,Object>> getUDBPagesUDBTable(@PathVariable("UDBid") String id) throws Exception {
+        LinkedHashSet pages = udbDataTableService.getAllUDBPagesInTable(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("UDB Pages", pages);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/createUdbTable")
     public ResponseEntity<Map<String,Object>> createUDBDataTable(@RequestBody Map<String,String> reqBody) throws Exception {
         UDBDataTable udbDataTable = udbDataTableService.createUDBDataTable(reqBody.get("title"));
@@ -31,7 +40,7 @@ public class UDBDataTableController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/updateUdbTable/{UDBid}")
+    @PutMapping("/{UDBid}/updateUdbTable")
     public ResponseEntity<Map<String,Object>> updateUDBDataTable(@PathVariable("UDBid") String id, @RequestBody Map<String,String> reqBody) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try{
@@ -55,7 +64,11 @@ public class UDBDataTableController {
 
     //@PutMapping("/updateUdbTable/{UDBid}/property/{propertyID}")
 
-    //@DeleteMapping("/updateUdbTable/{UDBid}/property/{propertyID}")
+    @DeleteMapping("/{UDBid}/updateUdbTable/property/{propertyID}")
+    public ResponseEntity<String> deleteAProperty(@PathVariable("UDBid") String id, @PathVariable("propertyID") String propertyID) throws Exception {
+        udbDataTableService.removePropertyFromUDBDataTable(id, propertyID);
+        return ResponseEntity.ok("Deleted UDB Data Table");
+    }
 
 
     @DeleteMapping("/deleteUdbTable/{UDBid}")

@@ -5,6 +5,9 @@ import com.notionreplica.udbs.services.command.CommandFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+
 import static com.notionreplica.udbs.services.command.CommandInterface.*;
 
 @Service
@@ -28,11 +31,15 @@ public class UDBDataTableService extends Throwable{
         return (UDBDataTable) commandFactory.create(ADD_PROPERTYTOUDBDATATABLE, ID, propertyID).execute();
     }
 
-    public UDBDataTable removePropertyFromUDBDataTable(String ID, String propertyID) throws Exception {
-        return (UDBDataTable) commandFactory.create(REMOVE_PROPERTYFROMUDBDATATABLE, ID, propertyID).execute();
+    public String removePropertyFromUDBDataTable(String ID, String propertyID) throws Exception {
+        return (String) commandFactory.create(REMOVE_PROPERTYFROMUDBDATATABLE, ID, propertyID).execute();
     }
 
-    public void deleteUDBDataTable(String ID) throws Exception {
-        commandFactory.create(DELETE_UDBDATATABLE, ID).execute();
+    public LinkedHashSet<String> getAllUDBPagesInTable(String ID){
+        return (LinkedHashSet<String>) commandFactory.create(GET_UDBPAGES, ID);
+    }
+
+    public String deleteUDBDataTable(String ID) throws Exception {
+        return (String) commandFactory.create(DELETE_UDBDATATABLE, ID).execute();
     }
 }
