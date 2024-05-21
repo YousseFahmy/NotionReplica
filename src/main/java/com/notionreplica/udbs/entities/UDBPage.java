@@ -24,6 +24,9 @@ public class UDBPage {
     private String pageID; //Coming from 2nd team
 
     @Field
+    private String dataTableID;
+
+    @Field
     private LinkedHashMap<Properties,Object> properties;
 
 

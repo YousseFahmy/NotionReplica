@@ -5,6 +5,8 @@ import com.notionreplica.udbs.repository.UDBDataTableRepo;
 import com.notionreplica.udbs.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 public class GetUDBDataTable implements CommandInterface {
     UDBDataTableRepo udbDataTableRepo;
@@ -12,10 +14,10 @@ public class GetUDBDataTable implements CommandInterface {
 
     @Override
     public Object execute() throws Exception {
-//        UDBDataTable udbDataTable = udbDataTableRepo.findUDBDataTableByUdbDataTableID(tableID);
-//		if(udbDataTable == null)
-//			throw new Exception(tableID + " not found");
-//		return udbDataTable;
-        return null;
+        Optional<UDBDataTable> udbDataTable = udbDataTableRepo.findById(tableID);
+		if(udbDataTable.isEmpty())
+			throw new Exception(tableID + " not found");
+		return udbDataTable;
+
     }
 }
