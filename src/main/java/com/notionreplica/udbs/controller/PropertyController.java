@@ -28,9 +28,9 @@ public class PropertyController {
 
     @PostMapping("/createProperty")
     public ResponseEntity<Map<String,Object>> createProperty(@RequestBody Map<String,Object> propertyData) throws Exception {
-        PropertyType propertyType = (PropertyType) propertyData.get("propertyType");
+        String propertyType = (String) propertyData.get("propertyType");
         String title = (String) propertyData.get("title");
-        Properties property = propertyService.createProperty(propertyType, title);
+        Properties property = propertyService.createProperty(PropertyType.valueOf(propertyType.toUpperCase()), title);
         Map<String, Object> response = new HashMap<>();
         response.put("Property", property);
         return ResponseEntity.ok(response);
