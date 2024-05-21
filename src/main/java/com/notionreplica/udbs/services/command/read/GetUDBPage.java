@@ -5,6 +5,8 @@ import com.notionreplica.udbs.repository.UDBPageRepo;
 import com.notionreplica.udbs.services.command.CommandInterface;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 public class GetUDBPage implements CommandInterface {
     UDBPageRepo udbPageRepo;
@@ -12,9 +14,9 @@ public class GetUDBPage implements CommandInterface {
 
     @Override
     public Object execute() throws Exception {
-        UDBPage udbPage = udbPageRepo.findUDBPageByUdbPageID(pageID);
-        if(udbPage == null)
+        Optional<UDBPage> udbPage = udbPageRepo.findById(pageID);
+        if(udbPage.isEmpty())
             throw new Exception(pageID + " not found");
-        return udbPage;
+        return udbPage.get();
     }
 }

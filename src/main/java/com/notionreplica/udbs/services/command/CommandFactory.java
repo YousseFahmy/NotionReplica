@@ -68,14 +68,14 @@ public class CommandFactory {
 
             //UDB PAGE STUFF
             case CREATE_UDBPAGE:
-                return new CreateUDBPage(udbPageRepo, (String) params[0], (String) params[1]);
+                return new CreateUDBPage(udbDataTableRepo, udbPageRepo, (String) params[0], (String) params[1]);
 
             case GET_UDBPAGE:
                 return new GetUDBPage(udbPageRepo,(String) params[0]);
 
 
             case DELETE_UDBPAGE:
-                return new DeleteUDBPage(udbPageRepo,(String) params[0]);
+                return new DeleteUDBPage(udbDataTableRepo, udbPageRepo,(String) params[0]);
             //STUFF
 
             case CREATE_PROPERTY:

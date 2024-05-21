@@ -26,8 +26,8 @@ public class UDBPage {
     @Field
     private String dataTableID;
 
-    @Field
-    private LinkedHashMap<Properties,Object> properties;
+//    @Field
+//    private LinkedHashMap<Properties,Object> properties;
 
 
 
