@@ -1,10 +1,7 @@
 package com.notionreplica.notesApp.controller;
 
-import com.notionreplica.notesApp.entities.ContentBlock;
+import com.notionreplica.notesApp.entities.*;
 import com.notionreplica.notesApp.exceptions.UserDoesNotExistException;
-import com.notionreplica.notesApp.entities.AccessModifier;
-import com.notionreplica.notesApp.entities.Page;
-import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.services.FireBaseStorageService;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
@@ -79,6 +76,42 @@ public class NotesController {
         response.put("Page", notesService.getPage(pageId, userWorkspace.getWorkSpaceId()));
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/{pageId}/getMedia")
+    public ResponseEntity<Map<String, Object>> getMedia(@PathVariable("userId") UUID userId,
+                                                       @PathVariable("pageId") String pageId,
+                                                       @PathVariable("workspaceId")String workspaceId,
+                                                        @RequestParam("mediaType") String mediaType) throws Exception {
+
+        Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
+        if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
+        Page currentPage = notesService.getPage(pageId,workspaceId);
+        String fileName ="";
+        String[] fileNameElements;
+        switch (mediaType.toLowerCase()){
+            case "background":
+                String[] backgroundURLElements = currentPage.getBackgroundURL().split("/");
+                fileName= backgroundURLElements[backgroundURLElements.length-1];
+                break;
+            case "icon":
+                String[] iconURLElements = currentPage.getIconURL().split("/");
+                fileName= iconURLElements[iconURLElements.length-1];
+                break;
+            default:
+                for (ContentBlock contentBlock: currentPage.getPageContent()){
+                    if(contentBlock.getType().equals(ContentType.IMAGE) ){
+                        String fileURL = (String) contentBlock.getContent();
+                        String fileNameExists = fileURL.split("/")[fileURL.split("/").length-1];
+                        if (fileNameExists.equals(mediaType)) {
+                            fileName = fileNameExists;
+                            break;
+                        }
+                    }
+                }
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("Page", fireBaseStorageService.getFile(fileName));
+        return ResponseEntity.ok(response);
+    }
     @DeleteMapping("/deletePages")
     public ResponseEntity<Map<String, Object>> deletePages(@PathVariable("userId") UUID userId,
                                                            @PathVariable("workspaceId")String workspaceId) throws Exception {
@@ -136,7 +169,6 @@ public class NotesController {
                                                           @PathVariable("workspaceId")String workspaceId,
                                                           @PathVariable("pageId")String pageId,
                                                           @RequestBody Map<String,Object> requestBody) throws Exception {
-
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userId,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
 
