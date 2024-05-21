@@ -37,6 +37,11 @@ services:
 #    volumes:
 #      - redis_data:/data
 
+  kafka:
+    image: apache/kafka
+    ports:
+      - "9092:9092"
+
 networks:
   postgres:
     driver: bridge

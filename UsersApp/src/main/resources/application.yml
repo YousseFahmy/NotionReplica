@@ -18,3 +18,5 @@ spring:
     show-sql: true
   redis:
     url: redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053
+  kafka:
+    bootstrap-servers: localhost:9092
