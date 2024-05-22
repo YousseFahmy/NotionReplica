@@ -34,29 +34,28 @@ public class UserService {
     private CommandFactory CommandFactory;
 
     @Autowired
-    private KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
     private static final String REPLY_TOPIC = "userReplyTopic";
     private static final String REQUEST_TOPIC = "userRequestTopic";
 
     @KafkaListener(topics = REQUEST_TOPIC, groupId = "userServiceGroup")
-    public void listenForRequests(ConsumerRecord<String, Object> record) throws Exception {
-        Map<String,Object> message = (Map<String, Object>) record.value();
-        String correlationId = (String) message.get("correlationId");
-        String username = (String) message.get("username");
+    public void listenForRequests(ConsumerRecord<String, String> record) throws Exception {
+        String message = record.value();
+        org.json.JSONObject jsonObject = new org.json.JSONObject(message);
+        String correlationId = jsonObject.getString("correlationId");
+        String username = jsonObject.getString("username");
 
-        Map<String,Object> response = new HashMap<>();
+        boolean userExists = false;
         try {
             getUser(username);
-            response.put("userExists", true);
+            userExists = true;
         }
         catch (Exception e){
-            response.put("userExists", false);
+            userExists = false;
         }
 
-        response.put("username", username);
-
-        // Prepare response message
-        response.put("correlationId", correlationId);
+        String response = String.format("{\"correlationId\":\"%s\", \"username\":\"%s\", \"userExists\":\"%s\" }",
+                correlationId, username, userExists);
 
         // Send the response message to the reply topic
         kafkaTemplate.send(REPLY_TOPIC, response);
