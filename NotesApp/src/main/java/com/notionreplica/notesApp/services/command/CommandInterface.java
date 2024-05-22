@@ -23,6 +23,8 @@ public interface CommandInterface {
     int UPDATE_PAGE_CONTNET = 17;
     int MOVE_SUBPAGE = 18;
     int CHANGE_ACCESS_MODIFEIR =19;
+    int ADD_UDB = 20;
+    int DELETE_UDB=21;
     Object execute() throws Exception;
 
 }

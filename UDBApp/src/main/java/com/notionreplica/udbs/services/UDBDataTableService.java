@@ -2,9 +2,13 @@ package com.notionreplica.udbs.services;
 
 import com.notionreplica.udbs.entities.UDBDataTable;
 import com.notionreplica.udbs.services.command.CommandFactory;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
@@ -14,7 +18,23 @@ import static com.notionreplica.udbs.services.command.CommandInterface.*;
 public class UDBDataTableService extends Throwable{
     @Autowired
     private CommandFactory commandFactory;
+    @Autowired
+    private KafkaTemplate<String,String> kafkaTemplate;
+    private static final String REQUEST_TOPIC = "udbRequestTopic";
+    private static final String REPLY_TOPIC = "udbReplyTopic";
 
+    @KafkaListener(topics = REQUEST_TOPIC, groupId = "udbTableServiceGroup")
+    public void listenForRequests(ConsumerRecord<String, String> record) throws Exception {
+        String message = record.value();
+        org.json.JSONObject jsonObject = new org.json.JSONObject(message);
+        String correlationId = jsonObject.getString("correlationId");
+        String title = jsonObject.getString("title");
+        UDBDataTable newUDBDataTable = createUDBDataTable(title);
+        String udbId = newUDBDataTable.getUdbDataTableID();
+        String response = String.format("{\"correlationId\":\"%s\", \"udbId\":\"%s\" }",
+                correlationId,udbId);
+        kafkaTemplate.send(REPLY_TOPIC, response);
+    }
     public UDBDataTable createUDBDataTable(String title) throws Exception {
         return (UDBDataTable) commandFactory.create(CREATE_UDBDATATABLE, title).execute();
     }

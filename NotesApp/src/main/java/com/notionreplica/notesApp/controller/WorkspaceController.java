@@ -1,12 +1,17 @@
 package com.notionreplica.notesApp.controller;
 import com.notionreplica.notesApp.services.AuthorizationService;
+import com.notionreplica.notesApp.services.KafkaService;
 import com.notionreplica.notesApp.services.WorkSpaceService;
 import com.notionreplica.notesApp.entities.Workspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user/{userName}/workspace")
@@ -15,9 +20,13 @@ public class WorkspaceController extends Throwable{
     private WorkSpaceService workSpaceService;
     @Autowired
     private AuthorizationService authorizationService;
+    @Autowired
+    private KafkaService kafkaService;
 
     @PostMapping("/createWorkSpace")
     public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userName") String userName) throws Exception{
+//        CompletableFuture<Boolean> doesUserExistRequest =kafkaService.doesUserExistRequest(userName);
+//        if(!doesUserExistRequest.get(15, TimeUnit.SECONDS)) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
         Workspace userWorkSpace =workSpaceService.createWorkSpace(userName);
         response.put("workSpace",userWorkSpace);
@@ -34,7 +43,14 @@ public class WorkspaceController extends Throwable{
     public ResponseEntity<Map<String, Object>> addUserToWorkSpace(@PathVariable("userName") String userName,
                                                                   @RequestBody Map<String,String> request)throws Exception{
         if(request.get("newUserName")==null) throw new Exception("Please provide a user to add");
+        CompletableFuture<Boolean> doesUserExistRequest =kafkaService.doesUserExistRequest(userName);
+
+        if(!doesUserExistRequest.get(15, TimeUnit.SECONDS)) throw new AccessDeniedException("");
         String newUserName= request.get("newUserName");
+
+        CompletableFuture<Boolean> doesNewUserExistRequest =kafkaService.doesUserExistRequest(newUserName);
+        if(!doesUserExistRequest.get(15, TimeUnit.SECONDS)) throw new AccessDeniedException("");
+
         Map<String, Object> response = new HashMap<>();
         Workspace userWorkSpace = workSpaceService.addUserToWorkspace(userName, newUserName);
         response.put("workspace",userWorkSpace);

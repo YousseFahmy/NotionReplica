@@ -64,6 +64,10 @@ public class CommandFactory {
                 return new MoveSubPage(pageRepo,(String)params[0],(String)params[1],(String)params[2]);
             case CHANGE_ACCESS_MODIFEIR:
                 return  new ChangeAccessModifeir(workspaceRepo,(Workspace)params[0],(AccessModifier)params[1],(String)params[2]);
+            case ADD_UDB:
+                return new AddUDB(pageRepo,(String) params[0],(String)params[1]);
+            case DELETE_UDB:
+                return new DeleteUDB(pageRepo,(String) params[0],(String)params[1]);
         }
         return null;
     }

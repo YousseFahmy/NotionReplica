@@ -3,6 +3,7 @@ package com.notionreplica.notesApp.controller;
 import com.notionreplica.notesApp.entities.*;
 import com.notionreplica.notesApp.exceptions.UserDoesNotExistException;
 import com.notionreplica.notesApp.services.FireBaseStorageService;
+import com.notionreplica.notesApp.services.KafkaService;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -29,15 +32,14 @@ public class NotesController {
     private AuthorizationService authorizationService;
     @Autowired
     private FireBaseStorageService fireBaseStorageService;
+    @Autowired
+    private KafkaService kafkaService;
 
     @PostMapping("/createPage")
     public ResponseEntity<Map<String, Object>> addPage(@PathVariable("userName") String userName,
                                                        @PathVariable("workspaceId")String workspaceId,
                                                        @RequestParam(name = "accessModifier") String accessModifier,
                                                        @RequestParam(name = "parent") String parent) throws Exception{
-//        CompletableFuture<Boolean> userExistsFuture = notesService.doesUserExistRequest(userName);
-//        boolean userExists = userExistsFuture.get();
-//        if(!userExists) throw new UserDoesNotExistException("");
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         Page newPage;
         try {
@@ -69,8 +71,8 @@ public class NotesController {
     }
     @GetMapping("/{pageId}")
     public ResponseEntity<Map<String, Object>> getPage(@PathVariable("userName") String userName,
-                                                       @PathVariable("pageId") String pageId,
-                                                       @PathVariable("workspaceId")String workspaceId) throws Exception {
+                                                       @PathVariable("workspaceId")String workspaceId,
+                                                       @PathVariable("pageId") String pageId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
@@ -79,10 +81,9 @@ public class NotesController {
     }
     @GetMapping("/{pageId}/getMedia")
     public ResponseEntity<Map<String, Object>> getMedia(@PathVariable("userName") String userName,
-                                                        @PathVariable("pageId") String pageId,
                                                         @PathVariable("workspaceId")String workspaceId,
+                                                        @PathVariable("pageId") String pageId,
                                                         @RequestParam("mediaType") String mediaType) throws Exception {
-
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
         Page currentPage = notesService.getPage(pageId,workspaceId);
@@ -115,8 +116,8 @@ public class NotesController {
     }
     @DeleteMapping("/{pageId}/deleteMedia")
     public ResponseEntity<Map<String, Object>> deleteMedia(@PathVariable("userName") String userName,
-                                                           @PathVariable("pageId") String pageId,
                                                            @PathVariable("workspaceId")String workspaceId,
+                                                           @PathVariable("pageId") String pageId,
                                                            @RequestParam("mediaType") String mediaType) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
@@ -169,8 +170,7 @@ public class NotesController {
     public ResponseEntity<Map<String, Object>> updateBackground(@PathVariable("userName") String userName,
                                                                 @PathVariable("workspaceId")String workspaceId,
                                                                 @PathVariable("pageId")String pageId,
-                                                                @RequestParam(value = "file", required = false) MultipartFile newBackground)
-            throws Exception {
+                                                                @RequestParam(value = "file", required = false) MultipartFile newBackground) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
         String fileUrl = "";
@@ -182,7 +182,6 @@ public class NotesController {
         response.put("Page",updatedPage);
         return ResponseEntity.ok(response);
     }
-
     @PutMapping("/{pageId}/updateIcon")
     public ResponseEntity<Map<String, Object>> updateIcon(@PathVariable("userName") String userName,
                                                           @PathVariable("workspaceId")String workspaceId,
@@ -216,47 +215,47 @@ public class NotesController {
         }
         return ResponseEntity.ok(response);
     }
-//    @PutMapping("/{pageId}/updateContnet")
-//    public ResponseEntity<Map<String, Object>> updateContent(@PathVariable("userName") String userName,
-//                                                            @PathVariable("workspaceId")String workspaceId,
-//                                                            @PathVariable("pageId")String pageId,
-//                                                            @RequestBody Map<String,Object> requestBody) throws Exception {
-//        Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
-//        if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
-//        Page updatedPage =null;
-//
-//        if(!(requestBody.get("pageContent")==null))
-//            updatedPage = notesService.updatePageContent(pageId,(List<ContentBlock>)requestBody.get("pageContent"));
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("Page",updatedPage);
-//        return ResponseEntity.ok(response);
-//    }
-
+    @PutMapping("/{pageId}/updateContnet")
+    public ResponseEntity<Map<String, Object>> updateContent(@PathVariable("userName") String userName,
+                                                            @PathVariable("workspaceId")String workspaceId,
+                                                            @PathVariable("pageId")String pageId,
+                                                            @RequestBody Map<String,Object> requestBody) throws Exception {
+        Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
+        if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
+        Page updatedPage =null;
+        if(!(requestBody.get("pageContent")==null))
+            updatedPage = notesService.updatePageContent(pageId,(List<ContentBlock>)requestBody.get("pageContent"));
+        Map<String, Object> response = new HashMap<>();
+        response.put("Page",updatedPage);
+        return ResponseEntity.ok(response);
+    }
     @PutMapping("/{pageId}/movePage")
     public ResponseEntity<Map<String, Object>> movePage(@PathVariable("userName") String userName,
                                                         @PathVariable("workspaceId")String workspaceId,
                                                         @PathVariable("pageId")String pageId,
                                                         @RequestBody Map<String,Object> requestBody) throws Exception {
-
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
+        String parentPageId = (String) requestBody.get("parentPageId");
+        String newparentPageId = (String) requestBody.get("newParentPageId");
 
+        if(parentPageId== null || newparentPageId == null) throw new Exception("missing parameters in request body");
         Map<String, Object> response = new HashMap<>();
 
-        if(!(requestBody.get("parentPageId")==null  && requestBody.get("newParentPageId")==null)){
-            if(((String)requestBody.get("parentPageId")).equals("")||!authorizationService.isPageOwner(userWorkspace,(String)requestBody.get("parentPageId"))) throw new AccessDeniedException("");
-            if(((String)requestBody.get("newParentPageId")).equals("")||!authorizationService.isPageOwner(userWorkspace,(String)requestBody.get("newParentPageId"))) throw new AccessDeniedException("");
-            response.put("Page",notesService.moveSubPage(pageId,(String)requestBody.get("parentPageId"),(String)requestBody.get("newParentPageId")));
-        }
+        if(!(parentPageId.equals("")
+           ||authorizationService.isPageOwner(userWorkspace,parentPageId)))
+            throw new AccessDeniedException("");
+        if(!(newparentPageId.equals("")
+                ||authorizationService.isPageOwner(userWorkspace,newparentPageId)))
+            throw new AccessDeniedException("");
+        response.put("Page",notesService.moveSubPage(pageId,(String)requestBody.get("parentPageId"),(String)requestBody.get("newParentPageId")));
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/changeAccessModifier")
+    @PutMapping("/{pageId}/changeAccessModifier")
     public ResponseEntity<Map<String, Object>> changeAccessModifier(@PathVariable("userName") String userName,
                                                                     @PathVariable("workspaceId")String workspaceId,
-                                                                    @RequestParam(name = "accessModifier") String accessModifier,
-                                                                    @RequestParam(name = "pageId") String pageId) throws Exception{
-
+                                                                    @PathVariable(name = "pageId") String pageId,
+                                                                    @RequestParam(name = "accessModifier") String accessModifier) throws Exception{
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
         Workspace newWorkSpace;
@@ -267,6 +266,30 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("newPage", newWorkSpace);
+        return ResponseEntity.ok(response);
+    }
+    @PutMapping("/{pageId}/addUDB")
+    public ResponseEntity<Map<String, Object>> addUDB( @PathVariable("userName") String userName,
+                                                       @PathVariable("workspaceId")String workspaceId,
+                                                       @PathVariable(name = "pageId") String pageId) throws Exception{
+        Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
+        if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
+        String udbId = kafkaService.createUDB("Untitled").get(15, TimeUnit.SECONDS);
+        Page updatedPage = notesService.addUDB(pageId,udbId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("newPage",updatedPage);
+        return ResponseEntity.ok(response);
+    }
+    @PutMapping("/{pageId}/deleteUDB/{udbId}")
+    public ResponseEntity<Map<String, Object>> deleteUDB( @PathVariable("userName") String userName,
+                                                          @PathVariable("workspaceId")String workspaceId,
+                                                          @PathVariable(name = "pageId") String pageId,
+                                                          @PathVariable(name = "udbId") String udbId) throws Exception{
+        Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
+        if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
+        Page updatedPage = notesService.removeUDB(pageId,udbId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("newPage",updatedPage);
         return ResponseEntity.ok(response);
     }
 }

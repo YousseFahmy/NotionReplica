@@ -22,8 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 public class NotesService{
     @Autowired
     private CommandFactory commandFactory;
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+
     public Page createPage(String workspaceId , AccessModifier accessModifier,String parent) throws Exception {
             return (Page) commandFactory.create(CommandInterface.CREATE_PAGE,workspaceId,accessModifier,parent).execute();
     }
@@ -65,62 +64,19 @@ public class NotesService{
         return (Page) commandFactory.create(CommandInterface.UPDATE_PAGE_CONTNET, pageId,pageContent).execute();
     }
 
-    public Page moveSubPage(String pageId, String parentPageId, String newParentPageId) {
-        return  (Page) commandFactory.create(CommandInterface.MOVE_SUBPAGE,pageId,parentPageId,newParentPageId);
+    public Page moveSubPage(String pageId, String parentPageId, String newParentPageId) throws Exception {
+        return  (Page) commandFactory.create(CommandInterface.MOVE_SUBPAGE,pageId,parentPageId,newParentPageId).execute();
     }
 
-    public Workspace changeAccessModifier(Workspace workSpace, AccessModifier accessModifier, String pageId) {
-        return  (Workspace) commandFactory.create(CommandInterface.CHANGE_ACCESS_MODIFEIR,workSpace,accessModifier,pageId);
+    public Workspace changeAccessModifier(Workspace workSpace, AccessModifier accessModifier, String pageId) throws Exception{
+        return  (Workspace) commandFactory.create(CommandInterface.CHANGE_ACCESS_MODIFEIR,workSpace,accessModifier,pageId).execute();
 
     }
-
-    private static final String PAGE_REPLY_TOPIC = "pageReplyTopic";
-    private static final String PAGE_REQUEST_TOPIC = "pageRequestTopic";
-    private final ConcurrentMap<String, CompletableFuture<Boolean>> pendingRequests = new ConcurrentHashMap<>();
-    private static final String USER_REQUEST_TOPIC = "userRequestTopic";
-    private static final String USER_REPLY_TOPIC = "userReplyTopic";
-    public CompletableFuture<Boolean> doesUserExistRequest(String username) {
-        String correlationId = java.util.UUID.randomUUID().toString();
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-        pendingRequests.put(correlationId, future);
-        String requestMessage = String.format("{\"correlationId\":\"%s\", \"username\":\"%s\" }",
-                correlationId,username);
-        kafkaTemplate.send(USER_REQUEST_TOPIC, requestMessage);
-        return future;
-    }
-    @KafkaListener(topics = USER_REPLY_TOPIC, groupId = "notesServiceGroup")
-    public void listenForReplies(ConsumerRecord<String, String> record) {
-        String message = record.value();
-
-        org.json.JSONObject jsonObject = new org.json.JSONObject(message);
-
-        String correlationId = jsonObject.getString("correlationId");
-        String username = jsonObject.getString("username");
-        boolean userExists =Boolean.parseBoolean(jsonObject.getString("userExists"));
-        CompletableFuture<Boolean> future = pendingRequests.remove(correlationId);
-        if (future != null) {
-            future.complete(userExists);
-        }
-    }
-    @KafkaListener(topics = PAGE_REQUEST_TOPIC, groupId = "notesServiceGroup")
-    public void listenForRequests(ConsumerRecord<String, String> record) throws Exception {
-        String message = record.value();
-        org.json.JSONObject jsonObject = new org.json.JSONObject(message);
-        String correlationId = jsonObject.getString("correlationId");
-        String username = jsonObject.getString("username");
-        String workspaceId = jsonObject.getString("workspaceId");
-        String pageId = jsonObject.getString("pageId");
-        Workspace userWorkspace = (Workspace)commandFactory.create(CommandInterface.IS_WORKSPACE_OWNER,username,workspaceId).execute();
-        boolean isPageOwner = (boolean)commandFactory.create(CommandInterface.IS_PAGE_OWNER,userWorkspace,pageId).execute();
-        if (!isPageOwner) {
-            throw new AccessDeniedException("You do not have permission to access this page");
-        }
-        AccessModifier accessModifier = userWorkspace.getAccessModifiers().get(pageId);
-        Page newPage = createPage(workspaceId, accessModifier, pageId);
-        String response = String.format("{\"correlationId\":\"%s\", \"pageId\":\"%s\" }",
-                correlationId,newPage.getPageId());
-        kafkaTemplate.send(PAGE_REPLY_TOPIC, response);
+    public Page addUDB(String pageId, String udbId) throws Exception{
+        return  (Page) commandFactory.create(CommandInterface.ADD_UDB,pageId,udbId).execute();
     }
 
-
+    public Page removeUDB(String pageId, String udbId) throws Exception{
+        return  (Page) commandFactory.create(CommandInterface.DELETE_UDB,pageId,udbId).execute();
+    }
 }

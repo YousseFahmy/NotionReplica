@@ -21,7 +21,6 @@ public class UpdatePageBackground implements CommandInterface {
         }
         Page userPage = userPageExists.get();
         userPage.setBackgroundURL(backgroundURL);
-        pageRepo.save(userPage);
         return pageRepo.save(userPage);
     }
 }
