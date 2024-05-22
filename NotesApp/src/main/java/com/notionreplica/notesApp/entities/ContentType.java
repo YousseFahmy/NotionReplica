@@ -1,0 +1,10 @@
+package com.notionreplica.notesApp.entities;
+
+public enum ContentType {
+    TEXT,PAGE,TODOLIST,TABLE,
+    HEADING1,HEADING2,HEADING3,HEADING4,
+    BULLETLIST,NUMBERLIST,TOGGLELIST,
+    DIVIDER,CALLOUT,
+    IMAGE,CODE, UDB,
+    COlUMN2,COLUMN3,COLUMN4,
+}
