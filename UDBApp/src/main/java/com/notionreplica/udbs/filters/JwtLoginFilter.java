@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +28,7 @@ public class JwtLoginFilter extends OncePerRequestFilter {
 
     private Jedis jedis;
 
-    @Value("${spring.redis.url}")
+    @Value("${spring.data.redis.url}")
     private String redisURL;
 
     @PostConstruct

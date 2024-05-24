@@ -8,10 +8,10 @@ spring:
       uri: mongodb+srv://SugarWhiskey:SugarWhiskey1234@notes-udbs.ohg7w44.mongodb.net/?retryWrites=true&w=majority&appName=Notes-UDBs
       database: NotesDB
       auto-index-creation: true
+    redis:
+      url: redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-  redis:
-    url: redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053
   kafka:
     bootstrap-servers: localhost:9092
 firebase:
