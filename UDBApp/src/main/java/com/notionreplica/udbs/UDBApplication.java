@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 
 @SpringBootApplication
-@EnableMongoRepositories()
+@EnableMongoRepositories
 @EnableMongoAuditing
 public class UDBApplication {
 

@@ -15,10 +15,7 @@ import com.notionreplica.udbs.services.command.read.GetProperty;
 import com.notionreplica.udbs.services.command.read.GetUDBDataTable;
 import com.notionreplica.udbs.services.command.read.GetUDBPage;
 import com.notionreplica.udbs.services.command.read.GetUDBPages;
-import com.notionreplica.udbs.services.command.update.AddPropertyToUDBDataTable;
-import com.notionreplica.udbs.services.command.update.RemovePropertyFromUDBDataTable;
-import com.notionreplica.udbs.services.command.update.UpdateProperty;
-import com.notionreplica.udbs.services.command.update.UpdateUDBDataTable;
+import com.notionreplica.udbs.services.command.update.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,11 +57,11 @@ public class CommandFactory {
             case DELETE_UDBDATATABLE:
                 return new DeleteUDBDataTable(udbDataTableRepo, udbPageRepo, propertiesRepo, (String) params[0]);
 
-//            case ADD_UDBPAGETOTABLE:
-//                return null;
-//
-//            case REMOVE_UDBPAGEFROMTABLE:
-//                return null;
+            case ADD_UDBPAGETOTABLE:
+                return new AddUDBPageToUDBDataTable(udbDataTableRepo,udbPageRepo, (String) params[0], (String) params[1]);
+
+            case REMOVE_UDBPAGEFROMTABLE:
+                return new RemoveUDBPageFromUDBDataTable(udbDataTableRepo,udbPageRepo, (String) params[0], (String) params[1]);
 
             //UDB PAGE STUFF
             case CREATE_UDBPAGE:

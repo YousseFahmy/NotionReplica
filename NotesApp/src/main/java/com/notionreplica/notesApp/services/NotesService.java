@@ -6,17 +6,14 @@ import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.services.command.CommandFactory;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import com.notionreplica.notesApp.entities.Page;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
+
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
 
 @Service
 public class NotesService{

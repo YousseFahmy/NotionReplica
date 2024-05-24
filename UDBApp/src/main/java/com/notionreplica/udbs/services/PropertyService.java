@@ -3,7 +3,6 @@ package com.notionreplica.udbs.services;
 import com.notionreplica.udbs.entities.Properties;
 import com.notionreplica.udbs.entities.PropertyType;
 import com.notionreplica.udbs.services.command.CommandFactory;
-import com.notionreplica.udbs.services.command.create.CreateProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

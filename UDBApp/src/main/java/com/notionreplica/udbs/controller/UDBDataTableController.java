@@ -49,9 +49,11 @@ public class UDBDataTableController {
                 udbDataTable = udbDataTableService.updateUDBDataTable(id, reqBody.get("title"));
             }
             if (reqBody.containsKey("propertyID") && reqBody.get("propertyID") != null) {
-                udbDataTable= udbDataTableService.addPropertyToUDBDataTable(id, reqBody.get("propertyID"));
+                udbDataTable= (UDBDataTable) udbDataTableService.addPropertyToUDBDataTable(id, reqBody.get("propertyID"));
             }
-            //if(reqBody.containsKey("udbpagesID") && reqBody.get("udbpagesID") != null){}
+            if(reqBody.containsKey("udbPagesID") && reqBody.get("udbPagesID") != null){
+                udbDataTable = (UDBDataTable) udbDataTableService.addUDBPageToUDBDataTable(id, reqBody.get("udbPagesID"));
+            }
 
             response.put("UDB Data Table", udbDataTable);
             return ResponseEntity.ok(response);
@@ -62,7 +64,16 @@ public class UDBDataTableController {
 
     }
 
-    //@PutMapping("/updateUdbTable/{UDBid}/property/{propertyID}")
+    @PutMapping("/updateUdbTable/{UDBid}/property/{propertyID}")
+    public ResponseEntity<String> removePropertyFromTable(@PathVariable("UDBid") String id, @PathVariable("propertyID") String propertyID) throws Exception {
+        udbDataTableService.removePropertyFromUDBDataTable(id, propertyID);
+        return ResponseEntity.ok("Removed Property from UDB Table");
+    }
+    @PutMapping("/updateUdbTable/{UDBid}/udbPage/{udbPageID}")
+    public ResponseEntity<String> removeUDBPageFromTable(@PathVariable("UDBid") String id, @PathVariable("udbPageID") String udbPageID) throws Exception{
+    udbDataTableService.removeUDBPageFromUDBDataTable(id,udbPageID);
+    return ResponseEntity.ok("Removed UDB Page from UDB Table");
+    }
 
     @DeleteMapping("/{UDBid}/updateUdbTable/property/{propertyID}")
     public ResponseEntity<String> deleteAProperty(@PathVariable("UDBid") String id, @PathVariable("propertyID") String propertyID) throws Exception {

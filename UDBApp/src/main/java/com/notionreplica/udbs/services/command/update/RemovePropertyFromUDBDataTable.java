@@ -25,7 +25,8 @@ public class RemovePropertyFromUDBDataTable implements CommandInterface {
             Optional<Properties> prop = propertiesRepo.findById(propertyID);
             if (prop.isPresent()){
                 udbDataTable.get().getProperties().remove(prop.get());
-                return udbDataTableRepo.save(udbDataTable.get());
+                udbDataTableRepo.save(udbDataTable.get());
+                return "Property removed";
             }
             return "Property not found";
         }

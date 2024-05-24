@@ -8,8 +8,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import static com.notionreplica.udbs.services.command.CommandInterface.*;
@@ -47,16 +45,25 @@ public class UDBDataTableService extends Throwable{
         return (UDBDataTable) commandFactory.create(UPDATE_UDBDATATABLE, ID, title).execute();
     }
 
-    public UDBDataTable addPropertyToUDBDataTable(String ID, String propertyID) throws Exception {
-        return (UDBDataTable) commandFactory.create(ADD_PROPERTYTOUDBDATATABLE, ID, propertyID).execute();
+    public Object addPropertyToUDBDataTable(String ID, String propertyID) throws Exception {
+        return (Object) commandFactory.create(ADD_PROPERTYTOUDBDATATABLE, ID, propertyID).execute();
     }
 
     public String removePropertyFromUDBDataTable(String ID, String propertyID) throws Exception {
         return (String) commandFactory.create(REMOVE_PROPERTYFROMUDBDATATABLE, ID, propertyID).execute();
     }
 
-    public LinkedHashSet<String> getAllUDBPagesInTable(String ID){
-        return (LinkedHashSet<String>) commandFactory.create(GET_UDBPAGES, ID);
+    public Object addUDBPageToUDBDataTable(String ID, String pageID) throws Exception {
+        return (Object) commandFactory.create(ADD_UDBPAGETOTABLE, ID, pageID).execute();
+    }
+
+    public String removeUDBPageFromUDBDataTable(String ID, String pageID) throws Exception {
+        return (String) commandFactory.create(REMOVE_UDBPAGEFROMTABLE, ID, pageID).execute();
+    }
+
+
+    public LinkedHashSet<String> getAllUDBPagesInTable(String ID) throws Exception{
+        return (LinkedHashSet<String>) commandFactory.create(GET_UDBPAGES, ID).execute();
     }
 
     public String deleteUDBDataTable(String ID) throws Exception {
