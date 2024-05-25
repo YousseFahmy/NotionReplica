@@ -4,9 +4,9 @@ spring:
   application:
     name: Users
   datasource:
-    username: teamtico
-    password: password
-    url: jdbc:postgresql://localhost:5432/userDB
+#    username: teamtico
+#    password: password
+#    url: jdbc:postgresql://postgres:5432/userDB
   jpa:
     hibernate:
       ddl-auto: update
