@@ -3,6 +3,8 @@ package com.notionreplica.udbs.controller;
 import com.notionreplica.udbs.entities.Properties;
 import com.notionreplica.udbs.entities.PropertyType;
 import com.notionreplica.udbs.services.PropertyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +18,14 @@ public class PropertyController {
 
     @Autowired
     PropertyService propertyService;
-
+    Logger log = LoggerFactory.getLogger(PropertyController.class);
 
     @GetMapping("/property/{propertyID}")
     public ResponseEntity<Map<String,Object>> getProperty(@PathVariable("propertyID") String propertyID) throws Exception {
         Properties property = propertyService.getProperty(propertyID);
         Map<String, Object> response = new HashMap<>();
         response.put("Property", property);
+        log.info("user accessed property with id :" + propertyID);
         return ResponseEntity.ok(response);
     }
 
@@ -33,12 +36,14 @@ public class PropertyController {
         Properties property = propertyService.createProperty(PropertyType.valueOf(propertyType.toUpperCase()), title);
         Map<String, Object> response = new HashMap<>();
         response.put("Property", property);
+        log.info("user created property with id :" + property.getPropertyID() + " and title :" + title);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/property/{propertyID}")
     public ResponseEntity<String> deleteProperty(@PathVariable("propertyID") String propertyID) throws Exception {
         propertyService.deleteProperty(propertyID);
+        log.info("user deleted property with id :" + propertyID);
         return ResponseEntity.ok("Property " + propertyID + " deleted");
     }
 
@@ -58,6 +63,7 @@ public class PropertyController {
         Properties property = propertyService.updateProperty(propertyID, propertyType, title);
         Map<String, Object> response = new HashMap<>();
         response.put("Property", property);
+        log.info("user updated property with id :" + propertyID + " and title :" + title);
         return ResponseEntity.ok(response);
     }
 }

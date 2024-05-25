@@ -1,25 +1,24 @@
 package com.notionreplica.notesApp.controller;
 
 import com.notionreplica.notesApp.entities.*;
-import com.notionreplica.notesApp.exceptions.UserDoesNotExistException;
 import com.notionreplica.notesApp.services.FireBaseStorageService;
 import com.notionreplica.notesApp.services.KafkaService;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
+<<<<<<< Updated upstream
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+=======
+>>>>>>> Stashed changes
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -34,6 +33,7 @@ public class NotesController {
     private FireBaseStorageService fireBaseStorageService;
     @Autowired
     private KafkaService kafkaService;
+    Logger log = LoggerFactory.getLogger(NotesController.class);
 
     @PostMapping("/createPage")
     public ResponseEntity<Map<String, Object>> addPage(@PathVariable("userName") String userName,
@@ -41,6 +41,7 @@ public class NotesController {
                                                        @RequestParam(name = "accessModifier") String accessModifier,
                                                        @RequestParam(name = "parent") String parent) throws Exception{
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
+
         Page newPage;
         try {
             newPage = notesService.createPage(userWorkspace.getWorkSpaceId(), AccessModifier.valueOf(accessModifier.toUpperCase()), parent);
@@ -49,8 +50,16 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("newPage", newPage);
+<<<<<<< Updated upstream
+        log.info("user:"+ userName + "created in his workspace with id :" +workspaceId +"page with id :" + newPage.getPageId() + "and access modifer" + accessModifier);
+=======
+
+>>>>>>> Stashed changes
         return ResponseEntity.ok(response);
+
     }
+
+
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getPages(@PathVariable("userName") String userName,
                                                         @PathVariable("workspaceId")String workspaceId) throws Exception {
@@ -59,12 +68,15 @@ public class NotesController {
         response.put("Pages", notesService.getPages(userWorkspace.getWorkSpaceId()));
         return ResponseEntity.ok(response);
     }
+
+
     @GetMapping("/getSharedPages/{requesterId}")
     public ResponseEntity<Map<String, Object>> getSharedPages(@PathVariable("userName") String userName,
                                                               @PathVariable("workspaceId")String workspaceId,
                                                               @PathVariable("requesterId")String requesterId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         boolean isRequesterAuthorized = authorizationService.isRequesterAuthorized(userWorkspace,requesterId);
+        if(!isRequesterAuthorized) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
         response.put("Pages", notesService.getSharedPages(userWorkspace));
         return ResponseEntity.ok(response);
@@ -77,6 +89,7 @@ public class NotesController {
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
         response.put("Page", notesService.getPage(pageId, userWorkspace.getWorkSpaceId()));
+        log.info("user:"+ userName + "opened from his workspace with id :" +workspaceId +"page with id :" + pageId);
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{pageId}/getMedia")
@@ -111,7 +124,7 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("Page", fireBaseStorageService.getFile(fileName));
-
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"and in page with id :" + pageId + "accessed the media named" +fileName);
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/{pageId}/deleteMedia")
@@ -146,6 +159,7 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("confirmation", fireBaseStorageService.deleteFile(fileName));
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"and in page with id :" + pageId + "deleted the media named" +fileName);
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/deletePages")
@@ -154,6 +168,7 @@ public class NotesController {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         Map<String, Object> response = new HashMap<>();
         response.put("Page", notesService.deletePagesByWorkSpaceId(userWorkspace.getWorkSpaceId()));
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"deleted all pages");
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/{pageId}/deletePage")
@@ -164,6 +179,7 @@ public class NotesController {
         if(!authorizationService.isPageOwner(userWorkspace,pageId)) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
         response.put("Page", notesService.deletePage(pageId,workspaceId));
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"deleted page with id :" + pageId);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/updateBackground")
@@ -180,6 +196,7 @@ public class NotesController {
         Page updatedPage = notesService.updatePageBackground(pageId,fileUrl);
         Map<String, Object> response = new HashMap<>();
         response.put("Page",updatedPage);
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"updated the background to page with id :" + pageId +"to" +fileUrl);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/updateIcon")
@@ -196,6 +213,8 @@ public class NotesController {
         Page updatedPage = notesService.updatePageIcon(pageId,fileUrl);
         Map<String, Object> response = new HashMap<>();
         response.put("Page",updatedPage);
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"updated the icon to page with id :" + pageId +"to" +fileUrl);
+
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/updateTitle")
@@ -213,6 +232,8 @@ public class NotesController {
         }else{
             response.put("Page",notesService.updatePageTitle(pageId,"Untitled"));
         }
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"updated the title to page with id :" + pageId +"to" +(String)requestBody.get("pageTitle"));
+
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/updateContnet")
@@ -227,6 +248,7 @@ public class NotesController {
             updatedPage = notesService.updatePageContent(pageId,(List<ContentBlock>)requestBody.get("pageContent"));
         Map<String, Object> response = new HashMap<>();
         response.put("Page",updatedPage);
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId +"updated the content to page with id :" + pageId);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/movePage")
@@ -249,6 +271,8 @@ public class NotesController {
                 ||authorizationService.isPageOwner(userWorkspace,newparentPageId)))
             throw new AccessDeniedException("");
         response.put("Page",notesService.moveSubPage(pageId,(String)requestBody.get("parentPageId"),(String)requestBody.get("newParentPageId")));
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId + "moved page with id :"+ pageId+ "from parent id:" + parentPageId +"to new parent id"+ newparentPageId);
+
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/changeAccessModifier")
@@ -266,6 +290,8 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("newPage", newWorkSpace);
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId + "changed the access modifier to the page with id :"+ pageId+"to"+ accessModifier);
+
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/addUDB")
@@ -278,6 +304,7 @@ public class NotesController {
         Page updatedPage = notesService.addUDB(pageId,udbId);
         Map<String, Object> response = new HashMap<>();
         response.put("newPage",updatedPage);
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId + "added to page with id :"+ pageId+ "a udb with id" + udbId);
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{pageId}/deleteUDB/{udbId}")
@@ -290,6 +317,7 @@ public class NotesController {
         Page updatedPage = notesService.removeUDB(pageId,udbId);
         Map<String, Object> response = new HashMap<>();
         response.put("newPage",updatedPage);
+        log.info("user:"+ userName + "in his workspace with id :" +workspaceId + "deleted from page with id :"+ pageId+ "a udb with id" + udbId);
         return ResponseEntity.ok(response);
     }
 }

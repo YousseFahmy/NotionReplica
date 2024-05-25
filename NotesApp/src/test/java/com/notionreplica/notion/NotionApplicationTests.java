@@ -5,9 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class NotionApplicationTests {
+<<<<<<< Updated upstream
 
-	@Test
-	void contextLoads() {
-	}
-
+=======
+>>>>>>> Stashed changes
 }

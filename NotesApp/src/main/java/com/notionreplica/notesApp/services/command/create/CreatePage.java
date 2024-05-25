@@ -40,6 +40,6 @@ public class CreatePage implements CommandInterface {
             userWorkspace.getAccessModifiers().put(newPage.getPageId(),accessModifier);
             workRepo.save(userWorkspace);
             return newPage;
-        } else throw new WorkspaceNotFoundException("The user doesnt have an existing workspace");
+        } else throw new WorkspaceNotFoundException("The worksspace"+ workspaceId +" doesn't exist");
     }
 }

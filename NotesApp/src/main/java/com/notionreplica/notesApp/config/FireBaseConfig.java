@@ -28,6 +28,8 @@ public class FireBaseConfig {
 
     @Bean
     public Storage initializeFirebaseApp() throws IOException {
+        System.out.println(serviceAccountPath);
+        System.out.println(storageBucket);
         FileInputStream serviceAccount = new FileInputStream(serviceAccountPath);
 
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);

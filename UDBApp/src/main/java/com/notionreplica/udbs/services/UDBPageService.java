@@ -3,6 +3,8 @@ package com.notionreplica.udbs.services;
 import com.notionreplica.udbs.entities.UDBPage;
 import com.notionreplica.udbs.services.command.CommandFactory;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -24,6 +26,7 @@ public class UDBPageService extends Throwable{
     private KafkaTemplate<String,String> kafkaTemplate;
     private static final String REQUEST_TOPIC = "pageRequestTopic";
     private static final String REPLY_TOPIC = "pageReplyTopic";
+    Logger log = LoggerFactory.getLogger(UDBPageService.class);
 
     public CompletableFuture<String> createPageRequest(String username,String workspaceId,String pageID) {
         String correlationId = java.util.UUID.randomUUID().toString();
@@ -31,6 +34,7 @@ public class UDBPageService extends Throwable{
         pendingRequests.put(correlationId, future);
         String requestMessage = String.format("{\"correlationId\":\"%s\", \"username\":\"%s\" , \"workspaceId\":\"%s\",  \"pageId\":\"%s\" }",
                 correlationId, username,workspaceId,pageID);
+        log.info("Sending create page request with correlation ID {} for user {} in workspace {}", correlationId, username, workspaceId);
         kafkaTemplate.send(REQUEST_TOPIC, requestMessage);
 
         return future;
@@ -46,7 +50,9 @@ public class UDBPageService extends Throwable{
         CompletableFuture<String> future = pendingRequests.remove(correlationId);
         if (future != null) {
             future.complete(pageId);
+            log.info("Created new UDBPage with ID {}", pageId);
         }
+
     }
 
     public UDBPage createUDBPage(String id, String tableID) throws Exception{

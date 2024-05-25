@@ -25,28 +25,16 @@ import static com.notionreplica.notesApp.services.command.CommandInterface.*;
 public class AuthorizationService {
     @Autowired
     private CommandFactory commandFactory;
-    private Jedis jedis;
-    @Value("${spring.redis.url}")
-    private String redisURL;
-    @PostConstruct
-    public void init() {
-        jedis = new Jedis(redisURL);
-    }
 
     public  boolean isPageOwner(Workspace userWorkspace, String pageId) throws Exception{
         return (boolean) commandFactory.create(IS_PAGE_OWNER,userWorkspace,pageId).execute();
     }
 
     public Workspace isWorkSpaceOwner(String username,String workspaceId) throws Exception{
-        return (Workspace) commandFactory.create(GET_WORKSPACE,username,workspaceId).execute();
+        return (Workspace) commandFactory.create(IS_WORKSPACE_OWNER,username,workspaceId).execute();
     }
 
     public boolean isRequesterAuthorized(Workspace userWorkspace, String requesterId) throws Exception{
         return (boolean) commandFactory.create(IS_REQUESTER_AUTHORIZED,userWorkspace,requesterId).execute();
     }
-//    public boolean isUserLoggedIn(String username, String token) throws Exception{
-//        String storedToken = jedis.get(username);
-//        if(storedToken==null) throw new  AccessDeniedException("");
-//        return storedToken.equals(token);
-//    }
 }

@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="notion" />
         <module name="Users" />
         <module name="notion (2)" />
         <module name="UsersApp" />
@@ -15,12 +16,15 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Users" target="17" />
+      <module name="SageScalable" target="1.5" />
+      <module name="UsersApp" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Users" options="-parameters" />
+      <module name="Users" options="" />
       <module name="UsersApp" options="-parameters" />
+      <module name="notion" options="-parameters" />
       <module name="notion (1)" options="-parameters" />
       <module name="notion (2)" options="-parameters" />
     </option>

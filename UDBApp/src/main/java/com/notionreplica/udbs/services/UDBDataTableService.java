@@ -3,6 +3,8 @@ package com.notionreplica.udbs.services;
 import com.notionreplica.udbs.entities.UDBDataTable;
 import com.notionreplica.udbs.services.command.CommandFactory;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,6 +27,7 @@ public class UDBDataTableService extends Throwable{
     private KafkaTemplate<String,String> kafkaTemplate;
     private static final String REQUEST_TOPIC = "udbRequestTopic";
     private static final String REPLY_TOPIC = "udbReplyTopic";
+    Logger log = LoggerFactory.getLogger(UDBDataTableService.class);
 
     @KafkaListener(topics = REQUEST_TOPIC, groupId = "udbTableServiceGroup")
     public void listenForRequests(ConsumerRecord<String, String> record) throws Exception {
@@ -36,7 +39,9 @@ public class UDBDataTableService extends Throwable{
         String udbId = newUDBDataTable.getUdbDataTableID();
         String response = String.format("{\"correlationId\":\"%s\", \"udbId\":\"%s\" }",
                 correlationId,udbId);
+        log.info("Creating new UDBDataTable with ID {} and title {}", udbId, title);
         kafkaTemplate.send(REPLY_TOPIC, response);
+
     }
 
 
