@@ -7,13 +7,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="notion (2)" />
-        <module name="notion (1)" />
         <module name="Users" />
+        <module name="notion (2)" />
+        <module name="UsersApp" />
+        <module name="notion (1)" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="UsersApp" target="17" />
+      <module name="Users" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

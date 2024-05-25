@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.notion-replica</groupId>
-	<artifactId>notion</artifactId>
+	<artifactId>userdb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>notion</name>
+	<name>userdb</name>
 	<description>notion replica back end app</description>
 
 	<parent>
