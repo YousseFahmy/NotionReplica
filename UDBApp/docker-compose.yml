@@ -4,7 +4,8 @@ services:
 
 #docker compose up -d
 #loki
-#graphana
+#grafana
+
    server:
         image: udbapp
         container_name: mainudbapp

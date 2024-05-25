@@ -19,14 +19,13 @@ public class UDBDataTable {
     private String udbDataTableID;
 
     @Field
-    private String udbDataTableTitle ;
+    private String udbDataTableTitle;
 
     @Field
     private LinkedHashSet<Properties> properties = new LinkedHashSet<>();
 
     @Field
     private LinkedHashSet<String> udbPages = new LinkedHashSet<>();
-
 
 
     @CreatedDate

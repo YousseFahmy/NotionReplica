@@ -27,6 +27,6 @@ public class UpdateProperty implements CommandInterface {
         if(title != null)
             properties.get().setTitle(title);
 
-        return properties.get();
+        return propertiesRepo.save(properties.get());
     }
 }
