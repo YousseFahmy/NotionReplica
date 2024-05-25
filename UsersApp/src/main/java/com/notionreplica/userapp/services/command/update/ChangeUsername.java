@@ -24,7 +24,7 @@ public class ChangeUsername implements CommandInterface {
             return "Username updated";
         }
         else {
-            throw new UserAlreadyExistsException("");
+            throw new UserAlreadyExistsException("User already exists");
         }
 
     }

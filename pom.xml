@@ -16,6 +16,8 @@
 	<description>Scalable project led by TeamTico™</description>
 	<modules>
 		<module>UsersApp</module>
+		<module>UDBApp</module>
+		<module>NotesApp</module>
 	</modules>
 	<properties>
 		<java.version>17</java.version>

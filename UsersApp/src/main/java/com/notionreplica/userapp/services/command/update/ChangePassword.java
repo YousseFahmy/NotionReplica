@@ -26,7 +26,7 @@ public class ChangePassword implements CommandInterface {
             repository.save(user);
         }
         else {
-            throw new IncorrectCredentialsException("");
+            throw new IncorrectCredentialsException("Incorrect credentials");
         }
         return "Password updated";
     }

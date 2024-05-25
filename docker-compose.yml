@@ -1,6 +1,58 @@
 services:
-  postgres:
-    container_name: postgres
+  usersapp:
+    image: usersapp
+    build:
+      context: ./UsersApp
+    depends_on:
+      - db
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/userDB
+      SPRING_DATASOURCE_USERNAME: teamtico
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - 8080:8080
+    networks:
+      - logs
+      - postgres
+      - kafka
+      - proxy
+
+  udbapp:
+    image: udbapp
+    build:
+      context: ./UDBApp
+    depends_on:
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+    ports:
+      - "8082:8082"
+    networks:
+      - logs
+      - kafka
+      - proxy
+
+  notesapp:
+    image: notesapp
+    build:
+      context: ./NotesApp
+    depends_on:
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+      GOOGLE_APPLICATION_CREDENTIALS: /config/firebase-key.json
+    ports:
+      - "8081:8081"
+    networks:
+      - logs
+      - kafka
+      - proxy
+    volumes:
+      - ./NotesApp/src/main/resources/replica-notion-media-server-firebase-adminsdk-skn6b-0fc5e1b947.json:/config/firebase-key.json
+
+  db:
     image: postgres
     environment:
       POSTGRES_USER: teamtico
@@ -29,13 +81,66 @@ services:
     restart: unless-stopped
 
   kafka:
-    image: apache/kafka
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
     ports:
-      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka
+
+  nginx:
+    image: nginx-reverse-proxy
+    build:
+      context: ./NginX
+    ports:
+      - "80:80"
+    depends_on:
+      - usersapp
+      - notesapp
+      - udbapp
+    networks:
+      - proxy
+
+  loki:
+    image: grafana/loki:latest
+    command: [ "-config.file=/etc/loki/local-config.yaml" ]
+    networks:
+      - logs
+    ports:
+      - "3100:3100"
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    networks:
+      - logs
+    ports:
+      - "3000:3000"
 
 networks:
   postgres:
     driver: bridge
+  kafka:
+  proxy:
+  logs:
 
 volumes:
   postgres:

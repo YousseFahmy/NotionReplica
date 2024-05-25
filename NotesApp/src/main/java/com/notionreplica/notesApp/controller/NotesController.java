@@ -5,10 +5,6 @@ import com.notionreplica.notesApp.services.FireBaseStorageService;
 import com.notionreplica.notesApp.services.KafkaService;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
-<<<<<<< Updated upstream
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-=======
->>>>>>> Stashed changes
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 
 @RestController
-@RequestMapping("/user/{userName}/workspace/{workspaceId}/notes")
+@RequestMapping("/notes/{userName}/workspace/{workspaceId}/notes")
 public class NotesController {
     @Autowired
     private NotesService notesService;
@@ -50,11 +46,7 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("newPage", newPage);
-<<<<<<< Updated upstream
         log.info("user:"+ userName + "created in his workspace with id :" +workspaceId +"page with id :" + newPage.getPageId() + "and access modifer" + accessModifier);
-=======
-
->>>>>>> Stashed changes
         return ResponseEntity.ok(response);
 
     }

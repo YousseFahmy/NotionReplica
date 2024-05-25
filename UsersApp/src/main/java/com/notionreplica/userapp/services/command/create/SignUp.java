@@ -30,7 +30,7 @@ public class SignUp implements CommandInterface {
             return user;
         }
         else{
-            throw new UserAlreadyExistsException("");
+            throw new UserAlreadyExistsException("User already exists");
         }
     }
 }

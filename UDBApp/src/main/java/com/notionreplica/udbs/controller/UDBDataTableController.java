@@ -13,7 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/{userId}/workspace/{workspaceId}/notes")
+@RequestMapping("/udb/{userId}/workspace/{workspaceId}/notes")
 public class UDBDataTableController {
     @Autowired
     private UDBDataTableService udbDataTableService;

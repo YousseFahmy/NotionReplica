@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/user/{userName}/workspace")
+@RequestMapping("/notes/{userName}/workspace")
 public class WorkspaceController extends Throwable{
     @Autowired
     private WorkSpaceService workSpaceService;
@@ -24,12 +24,7 @@ public class WorkspaceController extends Throwable{
     private AuthorizationService authorizationService;
     @Autowired
     private KafkaService kafkaService;
-<<<<<<< Updated upstream
     Logger log = LoggerFactory.getLogger(WorkspaceController.class);
-=======
-    Logger logger = LoggerFactory.getLogger(NotesController.class);
-
->>>>>>> Stashed changes
     @PostMapping("/createWorkSpace")
     public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userName") String userName) throws Exception{
         CompletableFuture<Boolean> doesUserExistRequest =kafkaService.doesUserExistRequest(userName);

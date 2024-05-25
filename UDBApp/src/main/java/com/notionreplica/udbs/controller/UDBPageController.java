@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/user/{userName}/workspace/{workspaceId}/notes/{pageID}/udbTable/{UDBid}")
+@RequestMapping("/udb/{userName}/workspace/{workspaceId}/notes/{pageID}/udbTable/{UDBid}")
 public class UDBPageController {
     @Autowired
     private UDBPageService pageService;

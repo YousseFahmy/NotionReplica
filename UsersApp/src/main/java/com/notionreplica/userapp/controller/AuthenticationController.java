@@ -6,6 +6,8 @@ import com.notionreplica.userapp.services.TokenService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -42,6 +44,8 @@ public class AuthenticationController {
         jedis = new Jedis(redisURL);
     }
 
+    Logger log = LoggerFactory.getLogger(AuthenticationController.class);
+
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) throws Exception{
         User newUser = authenticationService.SignUp(request);
@@ -49,6 +53,7 @@ public class AuthenticationController {
         jedis.set(newUser.getUsername(), jwtToken);
         jedis.expire(newUser.getUsername(), 60 * 60 * 24);
         AuthenticationResponse response = new AuthenticationResponse(jwtToken, newUser);
+        log.info("User " + newUser.getUsername() + " was registered with ID " + newUser.getId());
         return ResponseEntity.ok(response);
     }
 
@@ -59,6 +64,7 @@ public class AuthenticationController {
         jedis.set(myUser.getUsername(), jwtToken);
         jedis.expire(myUser.getUsername(), 60 * 60 * 24);
         AuthenticationResponse response = new AuthenticationResponse(jwtToken, myUser);
+        log.info("User " + myUser.getUsername() + " signed in");
         return ResponseEntity.ok(response);
     }
 
@@ -67,6 +73,7 @@ public class AuthenticationController {
         User user = authenticationService.getUser(username);
         Map<String, Object> response = new HashMap<>();
         response.put("User Details",user);
+        log.info("User " + user.getUsername() + " retrieved");
         return ResponseEntity.ok(response);
     }
 
@@ -76,6 +83,7 @@ public class AuthenticationController {
         String responseMessage = authenticationService.deleteUser(UID);
         Map<String, Object> response = new HashMap<>();
         response.put("Response",responseMessage);
+        log.info("User with ID " + UID + " was deleted");
         return ResponseEntity.ok(response);
     }
 
@@ -84,6 +92,7 @@ public class AuthenticationController {
         String responseMessage = authenticationService.changePassword(UID, changePasswordBody.getNewPassword(), changePasswordBody.getOldPassword());
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);
+        log.info("User with ID " + UID + " changed their password");
         return ResponseEntity.ok(response);
     }
 
@@ -92,6 +101,7 @@ public class AuthenticationController {
         String responseMessage = authenticationService.changeEmail(UID, newEmail);
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);
+        log.info("User with ID " + UID + " changed their email");
         return ResponseEntity.ok(response);
     }
 
@@ -100,6 +110,7 @@ public class AuthenticationController {
         String responseMessage = authenticationService.changeUsername(UID, newUsername);
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);
+        log.info("User with ID " + UID + " changed their username");
         return ResponseEntity.ok(response);
     }
 
@@ -108,6 +119,7 @@ public class AuthenticationController {
         String responseMessage = authenticationService.changeName(UID, newName.getFirstName(), newName.getLastName());
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);
+        log.info("User with ID " + UID + " changed their name");
         return ResponseEntity.ok(response);
     }
 

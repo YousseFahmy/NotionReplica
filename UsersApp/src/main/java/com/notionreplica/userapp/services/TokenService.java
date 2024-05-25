@@ -21,8 +21,8 @@ import java.util.function.Function;
 @Service
 @PropertySource("classpath:application.yml")
 public class TokenService {
-//    TODO remove secret key
-    private final String secretKey = "2d164e4203ae98f328aab0867447ce701d19aa92c51c9b0220ab31e7328ce568";
+    @Value("${spring.redis.key}")
+    private String secretKey;
 
     @Value("${spring.redis.url}")
     private String redisURL;
