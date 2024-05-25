@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: usersapp
+    name: Users
   datasource:
     username: teamtico
     password: password

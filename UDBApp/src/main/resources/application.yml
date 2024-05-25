@@ -1,0 +1,22 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: UDBApp
+  data:
+    mongodb:
+      uri: mongodb+srv://SugarWhiskey:SugarWhiskey1234@notes-udbs.ohg7w44.mongodb.net/?retryWrites=true&w=majority&appName=Notes-UDBs
+      database: NotesDB
+      auto-index-creation: true
+    redis:
+      url: redis://default:Tja6txFnJAqKglUil3ubHKEnPcghOmHj@redis-19053.c135.eu-central-1-1.ec2.redns.redis-cloud.com:19053
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  kafka:
+    bootstrap-servers: localhost:9092
+firebase:
+  service:
+    account:
+      path: D:/replica-notion-media-server-firebase-adminsdk-skn6b-0fc5e1b947.json
+    storage:
+      bucket: replica-notion-media-server.appspot.com
