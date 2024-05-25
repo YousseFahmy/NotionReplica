@@ -9,6 +9,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.notionreplica.udbs.services.command.CommandInterface.*;
 
@@ -16,6 +19,8 @@ import static com.notionreplica.udbs.services.command.CommandInterface.*;
 public class UDBDataTableService extends Throwable{
     @Autowired
     private CommandFactory commandFactory;
+
+    private final ConcurrentMap<String, CompletableFuture<String>> pendingRequests = new ConcurrentHashMap<>();
     @Autowired
     private KafkaTemplate<String,String> kafkaTemplate;
     private static final String REQUEST_TOPIC = "udbRequestTopic";
@@ -33,6 +38,8 @@ public class UDBDataTableService extends Throwable{
                 correlationId,udbId);
         kafkaTemplate.send(REPLY_TOPIC, response);
     }
+
+
     public UDBDataTable createUDBDataTable(String title) throws Exception {
         return (UDBDataTable) commandFactory.create(CREATE_UDBDATATABLE, title).execute();
     }

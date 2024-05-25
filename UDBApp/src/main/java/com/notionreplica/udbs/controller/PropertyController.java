@@ -45,9 +45,16 @@ public class PropertyController {
     @PutMapping("/property/{propertyID}")
     public ResponseEntity<Map<String,Object>> updateProperty(@PathVariable("propertyID") String propertyID,
                                                              @RequestBody Map<String,Object> propertyData) throws Exception {
+        String title = propertyService.getProperty(propertyID).getTitle();
+        PropertyType propertyType = propertyService.getProperty(propertyID).getType();
+        if (propertyData.containsKey("title") && propertyData.get("title") != null) {
+          title = (String) propertyData.get("title");
+        }
+        if (propertyData.containsKey("propertyType") && propertyData.get("propertyType") != null) {
+            String type = (String) propertyData.get("propertyType");
+            propertyType = PropertyType.valueOf(type.toUpperCase());
+        }
 
-        PropertyType propertyType = (PropertyType) propertyData.get("propertyType");
-        String title = (String) propertyData.get("title");
         Properties property = propertyService.updateProperty(propertyID, propertyType, title);
         Map<String, Object> response = new HashMap<>();
         response.put("Property", property);

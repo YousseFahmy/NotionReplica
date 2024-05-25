@@ -40,7 +40,7 @@ public class UDBDataTableController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{UDBid}/updateUdbTable")
+    @PutMapping("/updateUdbTable/{UDBid}")
     public ResponseEntity<Map<String,Object>> updateUDBDataTable(@PathVariable("UDBid") String id, @RequestBody Map<String,String> reqBody) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try{
@@ -58,7 +58,7 @@ public class UDBDataTableController {
             response.put("UDB Data Table", udbDataTable);
             return ResponseEntity.ok(response);
         }catch (Exception e){
-            //Edit this
+            System.out.println("7are2a 7are2a");
             return ResponseEntity.ok(response);
         }
 
@@ -71,8 +71,8 @@ public class UDBDataTableController {
     }
     @PutMapping("/updateUdbTable/{UDBid}/udbPage/{udbPageID}")
     public ResponseEntity<String> removeUDBPageFromTable(@PathVariable("UDBid") String id, @PathVariable("udbPageID") String udbPageID) throws Exception{
-    udbDataTableService.removeUDBPageFromUDBDataTable(id,udbPageID);
-    return ResponseEntity.ok("Removed UDB Page from UDB Table");
+        udbDataTableService.removeUDBPageFromUDBDataTable(id,udbPageID);
+        return ResponseEntity.ok("Removed UDB Page from UDB Table");
     }
 
     @DeleteMapping("/{UDBid}/updateUdbTable/property/{propertyID}")

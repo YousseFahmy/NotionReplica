@@ -21,9 +21,10 @@ public class RemoveUDBPageFromUDBDataTable implements CommandInterface {
         Optional<UDBDataTable> udbDataTable = udbDataTableRepo.findById(udbTableID);
         if (udbDataTable.isPresent()) {
             Optional<UDBPage> page = udbPageRepo.findById(udbPageID);
-            if (page.isPresent() && udbDataTable.get().getUdbPages().contains(page.get())){
-                udbDataTable.get().getUdbPages().remove(page.get());
-                return udbDataTableRepo.save(udbDataTable.get());
+            if (page.isPresent() && udbDataTable.get().getUdbPages().contains(page.get().getUdbPageID())){
+                udbDataTable.get().getUdbPages().remove(page.get().getUdbPageID());
+                udbDataTableRepo.save(udbDataTable.get());
+                return "UDB page delYEETed";
             }
             return "UDB Page not found";
         }
