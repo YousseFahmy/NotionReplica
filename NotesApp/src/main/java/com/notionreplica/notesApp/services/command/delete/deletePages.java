@@ -23,7 +23,7 @@ public class deletePages implements CommandInterface {
     public Object execute() throws Exception {
         Optional<Workspace> userWorkspaceExists = workRepo.findById(workspaceId);
         if(!userWorkspaceExists.isPresent()){
-            throw new WorkspaceNotFoundException("workspace does not exist");
+            throw new WorkspaceNotFoundException("The worksspace"+ workspaceId +" doesn't exist");
         }
         Workspace userWorkSpace= userWorkspaceExists.get();
 

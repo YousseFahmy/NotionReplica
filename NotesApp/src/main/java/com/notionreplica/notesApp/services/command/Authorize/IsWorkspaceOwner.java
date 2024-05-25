@@ -23,8 +23,8 @@ public class IsWorkspaceOwner implements CommandInterface {
             throw new InvalidObjectIdException("invalid workspace id");
         }
         Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
-        if(userWorkspaceExists==null) throw new WorkspaceNotFoundException("");
-        if(!userWorkspaceExists.getWorkSpaceId().equals((workspaceId))) throw new AccessDeniedException("");
+        if(userWorkspaceExists==null) throw new WorkspaceNotFoundException("no workspace for user " + userName+ "was found");
+        if(!userWorkspaceExists.getWorkSpaceId().equals((workspaceId)))  throw new AccessDeniedException("the user with username "+ userName+ "tried accessing the workspace:"+userWorkspaceExists.getWorkSpaceId() +"and they werent authorzied to do so");;
         return userWorkspaceExists;
     }
 }

@@ -15,7 +15,7 @@ public class IsRequesterAuthorized implements CommandInterface {
     @Override
     public Object execute() throws Exception {
         if(!userWorkSpace.getUsersWithAccess().contains(requesterName)){
-            throw new AccessDeniedException("");
+            throw new AccessDeniedException("the requester with username "+ requesterName+ "tried accessing the shared pages of "+userWorkSpace.getWorkSpaceId() +"and they werent authorzied to do so");
         }
         return true;
     }

@@ -21,7 +21,7 @@ public class GetPage implements CommandInterface {
     @Override
     public Object execute() throws Exception {
         if(!ObjectId.isValid(pageId)){
-            throw new InvalidObjectIdException("invalid page id");
+            throw new InvalidObjectIdException("invalid page id" + pageId);
         }
         return pageRepo.findById(pageId).get();
     }

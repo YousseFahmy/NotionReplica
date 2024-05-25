@@ -18,10 +18,10 @@ public class deleteWorkSpace implements CommandInterface {
     public Object execute() throws Exception {
         Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
         if(userWorkspaceExists ==null){
-            throw new WorkspaceNotFoundException("workspace does not exist");
+            throw new WorkspaceNotFoundException("The worksspace for username"+ userName  +" doesn't exist");
         }
         pageRepo.deleteAllById(userWorkspaceExists.getAccessModifiers().keySet());
-        workRepo.deleteWorkSpaceByUserName(userName);
-        return "Workspace deleted successfully";
+
+        return userWorkspaceExists.getWorkSpaceId();
     }
 }

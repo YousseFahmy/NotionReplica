@@ -3,6 +3,8 @@ import com.notionreplica.notesApp.services.AuthorizationService;
 import com.notionreplica.notesApp.services.KafkaService;
 import com.notionreplica.notesApp.services.WorkSpaceService;
 import com.notionreplica.notesApp.entities.Workspace;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +24,15 @@ public class WorkspaceController extends Throwable{
     private AuthorizationService authorizationService;
     @Autowired
     private KafkaService kafkaService;
-
+    Logger log = LoggerFactory.getLogger(WorkspaceController.class);
     @PostMapping("/createWorkSpace")
     public ResponseEntity<Map<String, Object>> createWorkSpace(@PathVariable("userName") String userName) throws Exception{
-//        CompletableFuture<Boolean> doesUserExistRequest =kafkaService.doesUserExistRequest(userName);
-//        if(!doesUserExistRequest.get(15, TimeUnit.SECONDS)) throw new AccessDeniedException("");
+        CompletableFuture<Boolean> doesUserExistRequest =kafkaService.doesUserExistRequest(userName);
+        if(!doesUserExistRequest.get(15, TimeUnit.SECONDS)) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
         Workspace userWorkSpace =workSpaceService.createWorkSpace(userName);
         response.put("workSpace",userWorkSpace);
+        log.info("user:"+ userName + "created his workspace with id :" +userWorkSpace.getWorkSpaceId());
         return ResponseEntity.ok(response);
     }
     @GetMapping("")
@@ -37,6 +40,7 @@ public class WorkspaceController extends Throwable{
         Workspace userWorkSpace = workSpaceService.getWorkSpace(userName);
         Map<String, Object> response = new HashMap<>();
         response.put("workspace",userWorkSpace);
+        log.info("user:"+ userName + "accessed his workspace with id :" +userWorkSpace.getWorkSpaceId());
         return ResponseEntity.ok(response);
     }
     @PutMapping("/addUserToWorkSpace")
@@ -54,6 +58,8 @@ public class WorkspaceController extends Throwable{
         Map<String, Object> response = new HashMap<>();
         Workspace userWorkSpace = workSpaceService.addUserToWorkspace(userName, newUserName);
         response.put("workspace",userWorkSpace);
+
+        log.info("user:"+ userName + "add user: "+ newUserName +"to his workspace with id :" +userWorkSpace.getWorkSpaceId());
         return ResponseEntity.ok(response);
     }
     @PutMapping("/removeUserFromWorkSpace")
@@ -64,6 +70,7 @@ public class WorkspaceController extends Throwable{
         Map<String, Object> response = new HashMap<>();
         Workspace userWorkSpace = workSpaceService.removeUserFromWorkspace(userName, userNameToRemove );
         response.put("workspace",userWorkSpace);
+        log.info("user:"+ userName + "removed user: "+ userNameToRemove +"to his workspace with id :" +userWorkSpace.getWorkSpaceId());
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/deleteWorkSpace")
@@ -71,6 +78,7 @@ public class WorkspaceController extends Throwable{
         Map<String, Object> response = new HashMap<>();
         String userWorkSpace =workSpaceService.deleteWorkSpace(userName);
         response.put("workspace",userWorkSpace);
+        log.info("user:"+ userName + "deleted his workspace with id :" +userWorkSpace);
         return ResponseEntity.ok(response);
     }
 }

@@ -18,7 +18,7 @@ public class deletePage implements CommandInterface {
     @Override
     public Object execute() throws Exception {
         Optional<Workspace>userWorkspaceExists = workspaceRepo.findById(workspaceId);
-        if(!userWorkspaceExists.isPresent()) throw new WorkspaceNotFoundException("");
+        if(!userWorkspaceExists.isPresent()) throw new WorkspaceNotFoundException("The worksspace"+ workspaceId +" doesn't exist");
         userWorkspaceExists.get().getAccessModifiers().put(pageId, AccessModifier.DELETED);
         workspaceRepo.save(userWorkspaceExists.get());
         return "deleted page " +pageId;

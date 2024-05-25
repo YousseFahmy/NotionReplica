@@ -1,11 +1,14 @@
 package com.notionreplica.notesApp.services;
 
+import com.notionreplica.notesApp.controller.WorkspaceController;
 import com.notionreplica.notesApp.entities.AccessModifier;
 import com.notionreplica.notesApp.entities.Page;
 import com.notionreplica.notesApp.entities.Workspace;
 import com.notionreplica.notesApp.services.command.CommandFactory;
 import com.notionreplica.notesApp.services.command.CommandInterface;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 @Service
 public class KafkaService {
-
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
@@ -31,6 +33,7 @@ public class KafkaService {
     private static final String USER_REPLY_TOPIC = "userReplyTopic";
     private final ConcurrentMap<String, CompletableFuture<Boolean>> userPendingRequests = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, CompletableFuture<String>> udbPendingRequests = new ConcurrentHashMap<>();
+    Logger log = LoggerFactory.getLogger(WorkspaceController.class);
 
     public CompletableFuture<Boolean> doesUserExistRequest(String username) {
         String correlationId = java.util.UUID.randomUUID().toString();
@@ -39,6 +42,7 @@ public class KafkaService {
         String requestMessage = String.format("{\"correlationId\":\"%s\", \"username\":\"%s\" }",
                 correlationId,username);
         kafkaTemplate.send(USER_REQUEST_TOPIC, requestMessage);
+        log.info("request made to user service with id " + correlationId + "requesting authentication for user" + username);
         return future;
     }
     @KafkaListener(topics = USER_REPLY_TOPIC, groupId = "notesServiceGroup")
@@ -51,6 +55,7 @@ public class KafkaService {
         CompletableFuture<Boolean> future = userPendingRequests.remove(correlationId);
         if (future != null) {
             future.complete(userExists);
+            log.info("user service completed the request  with id " + correlationId + "with the value" + userExists);
         }
     }
 
@@ -62,6 +67,7 @@ public class KafkaService {
         String requestMessage = String.format("{\"correlationId\":\"%s\", \"title\":\"%s\" }",
                 correlationId,title);
         kafkaTemplate.send(UDB_REQUEST_TOPIC, requestMessage);
+        log.info("request made to udb service with id " + correlationId + "requesting new udb creation with title" + title);
         return future;
     }
     @KafkaListener(topics = UDB_REPLY_TOPIC, groupId = "notesServiceGroup")
@@ -73,6 +79,7 @@ public class KafkaService {
         CompletableFuture<String> future = udbPendingRequests.remove(correlationId);
         if (future != null) {
             future.complete(udbId);
+            log.info("udb service completed the request  with id " + correlationId + "with the udb id " + udbId);
         }
     }
 
@@ -93,6 +100,7 @@ public class KafkaService {
         Page newPage =(Page) commandFactory.create(CommandInterface.CREATE_PAGE,workspaceId,accessModifier,pageId).execute();
         String response = String.format("{\"correlationId\":\"%s\", \"pageId\":\"%s\" }",
                 correlationId,newPage.getPageId());
+        log.info("udb service requested a new page and its id is " + newPage.getPageId()+ "in the workspace id " + workspaceId);
         kafkaTemplate.send(PAGE_REPLY_TOPIC, response);
     }
 }

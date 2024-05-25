@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="notion" />
+        <module name="Users" />
         <module name="notion (2)" />
         <module name="notion (1)" />
-        <module name="Users" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -20,6 +21,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Users" options="-parameters" />
       <module name="UsersApp" options="-parameters" />
+      <module name="notion" options="-parameters" />
       <module name="notion (1)" options="-parameters" />
       <module name="notion (2)" options="-parameters" />
     </option>

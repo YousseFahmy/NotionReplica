@@ -17,7 +17,7 @@ public class GetWorkspace implements CommandInterface {
     @Override
     public Object execute() throws Exception {
         Workspace userWorkspaceExists = workRepo.findWorkspaceByUserName(userName);
-        if(userWorkspaceExists==null) throw new WorkspaceNotFoundException("");
+        if(userWorkspaceExists==null) throw new WorkspaceNotFoundException("The workspace for username"+ userName +" doesn't exist");
         return userWorkspaceExists;
     }
 }

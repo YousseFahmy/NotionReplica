@@ -18,7 +18,7 @@ public class UpdatePageTitle implements CommandInterface {
     public Object execute() throws Exception {
         Optional<Page> userPageExists = pageRepo.findById(pageId);
         if(!userPageExists.isPresent()) {
-            throw new PageNotFoundException("");
+            throw new PageNotFoundException("the page id " + pageId +"doesnt exist");
         }
         Page userPage = userPageExists.get();
         pageTitle =pageTitle.equals("") ? "untitled" : pageTitle;
