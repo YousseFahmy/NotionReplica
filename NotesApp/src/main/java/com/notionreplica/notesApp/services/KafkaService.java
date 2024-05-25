@@ -33,7 +33,7 @@ public class KafkaService {
     private static final String USER_REPLY_TOPIC = "userReplyTopic";
     private final ConcurrentMap<String, CompletableFuture<Boolean>> userPendingRequests = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, CompletableFuture<String>> udbPendingRequests = new ConcurrentHashMap<>();
-    Logger log = LoggerFactory.getLogger(WorkspaceController.class);
+    Logger log = LoggerFactory.getLogger(KafkaService.class);
 
     public CompletableFuture<Boolean> doesUserExistRequest(String username) {
         String correlationId = java.util.UUID.randomUUID().toString();

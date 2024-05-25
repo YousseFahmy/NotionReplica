@@ -14,7 +14,7 @@ import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    Logger log = LoggerFactory.getLogger(WorkspaceController.class);
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
@@ -39,10 +39,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(PageNotFoundException.class)
     public ResponseEntity<String> handlePageNotFoundException(PageNotFoundException ex) {
+        log.error(ex.getMessage());
         return new ResponseEntity<>("The page id provided doesn't exist", HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(UserDoesNotExistException.class)
     public ResponseEntity<String> handleUserDoesNotExistException(UserDoesNotExistException ex) {
+        log.error(ex.getMessage());
         return new ResponseEntity<>("The user provided doesn't exist", HttpStatus.NOT_FOUND);
     }
 

@@ -2,6 +2,8 @@ package com.notionreplica.udbs.controller;
 
 import com.notionreplica.udbs.entities.UDBPage;
 import com.notionreplica.udbs.services.UDBPageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ public class UDBPageController {
     @Autowired
     private UDBPageService pageService;
 
-
+    Logger log = LoggerFactory.getLogger(UDBPageController.class);
     @PostMapping("/createPage")
     public ResponseEntity<Map<String, Object>> createPage( @PathVariable("userName") String username,
                                                            @PathVariable("workspaceId") String workspaceId,
@@ -30,6 +32,7 @@ public class UDBPageController {
         UDBPage page = pageService.createUDBPage(udbPageID, tableID);
         Map<String, Object> response = new HashMap<>();
         response.put("UDB page", page);
+        log.info("user created udb page with id :" + udbPageID);
         return ResponseEntity.ok(response);
     }
 
@@ -44,6 +47,7 @@ public class UDBPageController {
     @DeleteMapping("/page/{udbPageID}")
     public ResponseEntity<String> deletePage(@PathVariable("udbPageID") String udbPageID) throws Exception {
         pageService.deleteUDBPage(udbPageID);
+        log.info("user deleted udb page with id :" + udbPageID);
         return ResponseEntity.ok("Deleted UDB page");
     }
 }

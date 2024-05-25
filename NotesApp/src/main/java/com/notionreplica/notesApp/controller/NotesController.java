@@ -36,7 +36,7 @@ public class NotesController {
     private FireBaseStorageService fireBaseStorageService;
     @Autowired
     private KafkaService kafkaService;
-    Logger log = LoggerFactory.getLogger(WorkspaceController.class);
+    Logger log = LoggerFactory.getLogger(NotesController.class);
 
     @PostMapping("/createPage")
     public ResponseEntity<Map<String, Object>> addPage(@PathVariable("userName") String userName,
