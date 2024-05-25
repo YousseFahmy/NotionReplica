@@ -31,7 +31,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(ex.getMessage());
         return new ResponseEntity<>("Access Denied", HttpStatus.UNAUTHORIZED);
     }
-
     @ExceptionHandler(WorkspaceNotFoundException.class)
     public ResponseEntity<String> handleWorkspaceNotFoundException(WorkspaceNotFoundException ex) {
         log.error(ex.getMessage());

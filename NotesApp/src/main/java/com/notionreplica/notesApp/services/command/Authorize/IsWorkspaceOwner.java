@@ -17,6 +17,8 @@ public class IsWorkspaceOwner implements CommandInterface {
     WorkspaceRepo workRepo;
     String userName;
     String workspaceId;
+
+
     @Override
     public Object execute() throws Exception {
         if(!ObjectId.isValid(workspaceId)){
@@ -27,4 +29,6 @@ public class IsWorkspaceOwner implements CommandInterface {
         if(!userWorkspaceExists.getWorkSpaceId().equals((workspaceId)))  throw new AccessDeniedException("the user with username "+ userName+ "tried accessing the workspace:"+userWorkspaceExists.getWorkSpaceId() +"and they werent authorzied to do so");;
         return userWorkspaceExists;
     }
+
+
 }

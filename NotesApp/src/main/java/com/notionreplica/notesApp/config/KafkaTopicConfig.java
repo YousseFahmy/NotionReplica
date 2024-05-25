@@ -11,4 +11,5 @@ public class KafkaTopicConfig {
     public NewTopic userRequestTopic(){
         return TopicBuilder.name("userRequestTopic").build();
     };
+
 }

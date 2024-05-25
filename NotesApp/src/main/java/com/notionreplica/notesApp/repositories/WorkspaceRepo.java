@@ -11,6 +11,7 @@ import java.util.UUID;
 @Repository
 public interface WorkspaceRepo extends MongoRepository <Workspace, String> {
     Workspace findWorkspaceByUserName(String userName);
+
     //@Query(value ="{'userId' : ?0}")
     void deleteWorkSpaceByUserName(String userName);
 

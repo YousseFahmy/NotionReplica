@@ -1,27 +1,24 @@
 package com.notionreplica.notesApp.controller;
 
 import com.notionreplica.notesApp.entities.*;
-import com.notionreplica.notesApp.exceptions.UserDoesNotExistException;
 import com.notionreplica.notesApp.services.FireBaseStorageService;
 import com.notionreplica.notesApp.services.KafkaService;
 import com.notionreplica.notesApp.services.NotesService;
 import com.notionreplica.notesApp.services.AuthorizationService;
+<<<<<<< Updated upstream
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+=======
+>>>>>>> Stashed changes
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -53,9 +50,16 @@ public class NotesController {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("newPage", newPage);
+<<<<<<< Updated upstream
         log.info("user:"+ userName + "created in his workspace with id :" +workspaceId +"page with id :" + newPage.getPageId() + "and access modifer" + accessModifier);
+=======
+
+>>>>>>> Stashed changes
         return ResponseEntity.ok(response);
+
     }
+
+
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getPages(@PathVariable("userName") String userName,
                                                         @PathVariable("workspaceId")String workspaceId) throws Exception {
@@ -64,12 +68,15 @@ public class NotesController {
         response.put("Pages", notesService.getPages(userWorkspace.getWorkSpaceId()));
         return ResponseEntity.ok(response);
     }
+
+
     @GetMapping("/getSharedPages/{requesterId}")
     public ResponseEntity<Map<String, Object>> getSharedPages(@PathVariable("userName") String userName,
                                                               @PathVariable("workspaceId")String workspaceId,
                                                               @PathVariable("requesterId")String requesterId) throws Exception {
         Workspace userWorkspace = authorizationService.isWorkSpaceOwner(userName,workspaceId);
         boolean isRequesterAuthorized = authorizationService.isRequesterAuthorized(userWorkspace,requesterId);
+        if(!isRequesterAuthorized) throw new AccessDeniedException("");
         Map<String, Object> response = new HashMap<>();
         response.put("Pages", notesService.getSharedPages(userWorkspace));
         return ResponseEntity.ok(response);
