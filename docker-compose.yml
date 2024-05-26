@@ -8,7 +8,7 @@ services:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/userDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/userDB
       SPRING_DATASOURCE_USERNAME: teamtico
       SPRING_DATASOURCE_PASSWORD: password
     ports:
@@ -17,6 +17,16 @@ services:
       - logs
       - postgres
       - kafka
+      - proxy
+
+  searchapp:
+    image: searchapp
+    build:
+      context: ./SearchApp
+    ports:
+      - "8083:8083"
+    networks:
+      - logs
       - proxy
 
   udbapp:
@@ -60,7 +70,7 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - "5433:5433"
     networks:
       - postgres
     restart: unless-stopped
