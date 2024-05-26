@@ -1,0 +1,20 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: SearchApp
+  data:
+    mongodb:
+      uri: mongodb+srv://SugarWhiskey:SugarWhiskey1234@notes-udbs.ohg7w44.mongodb.net/?retryWrites=true&w=majority&appName=Notes-UDBs
+      database: NotesDB
+      auto-index-creation: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  redis:
+    url: redis://default:aCTJcJQohFeTiIGlmcWP8TsDiH2dL5kr@redis-17516.c293.eu-central-1-1.ec2.redns.redis-cloud.com:17516
+  output:
+    ansi:
+      enabled: always
+  logging:
+    file:
+      name: logs/searchApp.log
