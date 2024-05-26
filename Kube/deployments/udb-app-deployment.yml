@@ -15,6 +15,7 @@ spec:
       containers:
       - name: udbapp
         image: udbapp
+        imagePullPolicy: Never
         ports:
         - containerPort: 8082
 ---

@@ -15,6 +15,7 @@ spec:
       containers:
       - name: searchapp
         image: searchapp
+        imagePullPolicy: Never
         ports:
         - containerPort: 8083
 ---

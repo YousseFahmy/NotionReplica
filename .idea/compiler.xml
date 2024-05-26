@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="search" />
         <module name="Users" />
         <module name="notesapp" />
         <module name="NotesApp" />
@@ -20,6 +21,7 @@
       <module name="UDBApp" options="-parameters" />
       <module name="Users" options="-parameters" />
       <module name="notesapp" options="-parameters" />
+      <module name="search" options="-parameters" />
     </option>
   </component>
 </project>

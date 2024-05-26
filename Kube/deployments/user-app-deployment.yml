@@ -15,6 +15,7 @@ spec:
       containers:
       - name: usersapp
         image: usersapp
+        imagePullPolicy: Never
         ports:
         - containerPort: 8080
 ---

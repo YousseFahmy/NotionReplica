@@ -15,8 +15,14 @@ spec:
       containers:
       - name: notesapp
         image: notesapp
+        imagePullPolicy: Never
         ports:
         - containerPort: 8081
+        env:
+        - name: SPRING_KAFKA_BOOTSTRAPSERVERS
+          value: kafka:29092
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /config/firebase-key.json
 ---
 apiVersion: v1
 kind: Service
@@ -29,4 +35,5 @@ spec:
     - protocol: TCP
       port: 8081
       targetPort: 8081
-  type: ClusterIP
+      nodePort: 30001
+  type: NodePort

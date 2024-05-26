@@ -14,9 +14,18 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:latest
+        image: nginx-reverse-proxy:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
 ---
 apiVersion: v1
 kind: Service
@@ -29,4 +38,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: LoadBalancer
+      nodePort: 30000
+  type: NodePort
