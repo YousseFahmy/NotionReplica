@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searchapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: searchapp
+  template:
+    metadata:
+      labels:
+        app: searchapp
+    spec:
+      containers:
+      - name: searchapp
+        image: searchapp
+        ports:
+        - containerPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: searchapp
+spec:
+  selector:
+    app: searchapp
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+  type: ClusterIP

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usersapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: usersapp
+  template:
+    metadata:
+      labels:
+        app: usersapp
+    spec:
+      containers:
+      - name: usersapp
+        image: usersapp
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usersapp
+spec:
+  selector:
+    app: usersapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
