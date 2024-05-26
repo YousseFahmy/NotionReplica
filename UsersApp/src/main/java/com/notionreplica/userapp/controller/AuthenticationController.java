@@ -15,11 +15,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import redis.clients.jedis.Connection;
 import redis.clients.jedis.Jedis;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 @Slf4j
 @RestController
@@ -89,6 +89,7 @@ public class AuthenticationController {
 
     @PostMapping("/changepassword/{userID}")
     public ResponseEntity<Map<String, Object>> changePassword(@PathVariable("userID") String UID, @RequestBody ChangePasswordRequest changePasswordBody) throws Exception {
+
         String responseMessage = authenticationService.changePassword(UID, changePasswordBody.getNewPassword(), changePasswordBody.getOldPassword());
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);
@@ -97,7 +98,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/changeemail/{userID}")
-    public ResponseEntity<Map<String, Object>> changeEmail(@PathVariable("userID") String UID, @RequestBody String newEmail) throws Exception {
+    public ResponseEntity<Map<String, Object>> changeEmail(@PathVariable("userID") String UID, @RequestBody Map<String,Object> requesttBody) throws Exception {
+        String newEmail = (String) requesttBody.get("newUsername");
+
         String responseMessage = authenticationService.changeEmail(UID, newEmail);
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);
@@ -106,7 +109,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/changeusername/{userID}")
-    public ResponseEntity<Map<String, Object>> changeUsername(@PathVariable("userID") String UID, @RequestBody String newUsername) throws Exception {
+    public ResponseEntity<Map<String, Object>> changeUsername(@PathVariable("userID") String UID, @RequestBody Map<String,Object> requesttBody) throws Exception {
+        String newUsername = (String) requesttBody.get("newUsername");
         String responseMessage = authenticationService.changeUsername(UID, newUsername);
         Map<String, Object> response = new HashMap<>();
         response.put("Response", responseMessage);

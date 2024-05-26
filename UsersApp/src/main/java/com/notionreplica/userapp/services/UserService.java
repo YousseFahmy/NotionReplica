@@ -79,7 +79,7 @@ public class UserService {
     }
 
     public String changePassword(String id, String newPassword, String oldPassword) throws Exception {
-        return (String) CommandFactory.create(CHANGE_PASSWORD, id, newPassword, oldPassword).execute();
+        return (String) CommandFactory.create(CHANGE_PASSWORD,passwordEncoder, id, newPassword, oldPassword).execute();
     }
 
     public String changeEmail(String id, String newEmail) throws Exception {

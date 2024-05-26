@@ -2,12 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="NotesApp" />
         <module name="Users" />
+        <module name="notesapp" />
+        <module name="NotesApp" />
         <module name="UDBApp" />
       </profile>
     </annotationProcessing>
@@ -17,6 +19,7 @@
       <module name="NotesApp" options="-parameters" />
       <module name="UDBApp" options="-parameters" />
       <module name="Users" options="-parameters" />
+      <module name="notesapp" options="-parameters" />
     </option>
   </component>
 </project>
